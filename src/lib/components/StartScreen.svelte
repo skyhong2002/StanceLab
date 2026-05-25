@@ -89,7 +89,7 @@
       <input
         type="text"
         class="field"
-        placeholder={'e.g. "Should AI tools be allowed in undergraduate classrooms?"'}
+        placeholder="e.g. Should AI tools be allowed in undergraduate classrooms?"
         value={question}
         oninput={(e) => onQuestion(e.currentTarget.value)}
       />
@@ -104,6 +104,7 @@
           <span class="typing-dots small"
             ><span></span><span></span><span></span></span
           >
+          Suggesting
         {:else}
           <Icon name="spark" />
           {questionSet ? "Rewrite" : "Suggest one"}
