@@ -41,49 +41,45 @@
 </script>
 
 <div class="page" style="max-width: 760px;">
-  <p class="eyebrow">A small, quiet space to think before you post</p>
-  <h1 class="display">What's on your mind?</h1>
+  <p class="eyebrow">一個讓你在發文前安靜思考的小空間</p>
+  <h1 class="display">你在想些什麼？</h1>
   <p class="lead" style="margin-bottom: 36px;">
-    Write your opinion first, even if it's rough or unresolved. Three different
-    AI voices will help you pull it apart — one asks, one organizes, one pushes
-    back — and a notepad next to them is yours to work in. You decide what gets
-    shared.
+    先寫下你的意見，即使它還粗糙、還沒理清也沒關係。三種不同的 AI 聲音會協助你把它拆解開來——一個提問、一個整理、一個反駁——旁邊還有一塊記事本供你發揮。要分享什麼，由你決定。
   </p>
 
   <div style="margin-bottom: 28px;">
     <div class="field-head">
-      <h2>Your opinion</h2>
-      <span class="muted text-sans" style="font-size: 12px;">required</span>
+      <h2>你的意見</h2>
+      <span class="muted text-sans" style="font-size: 12px;">必填</span>
     </div>
     <p class="muted text-sans" style="font-size: 13px; margin: 0 0 12px;">
-      A sentence or a paragraph. Contradictions welcome — don't smooth them out.
+      一句話或一段話都行。歡迎自相矛盾——別急著把它們抹平。
     </p>
     <textarea
       class="field"
       rows={5}
-      placeholder="e.g. I don't think AI should be banned in classes, but I keep thinking about students who can't afford a paid model — and I don't have a clean answer for that."
+      placeholder="例如：我不認為課堂上應該禁用 AI，但我一直想到那些付不起付費版本的學生——而我對此沒有一個漂亮的答案。"
       value={opinion}
       oninput={(e) => onOpinion(e.currentTarget.value)}
       autofocus
     ></textarea>
     <div class="field-row">
       <span class="muted text-sans" style="font-size: 12px;">
-        Write the way you'd say it to a friend.
+        用你對朋友說話的方式寫下來。
       </span>
-      <span class="field-counter">{opinion.length} chars</span>
+      <span class="field-counter">{opinion.length} 字</span>
     </div>
   </div>
 
   <div style="margin-bottom: 28px;">
     <div class="field-head">
-      <h2>The question you're wrestling with</h2>
+      <h2>你正在糾結的問題</h2>
       <span class="muted text-sans" style="font-size: 12px;">
-        optional · we'll suggest one if you skip it
+        選填 · 若你略過，我們會幫你建議一個
       </span>
     </div>
     <p class="muted text-sans" style="font-size: 13px; margin: 0 0 12px;">
-      A single question to keep the conversation pointed. If you don't have one
-      yet, we'll draft one from your opinion — you can edit or replace it.
+      一個能讓對話保持聚焦的問題。如果你還沒有，我們會根據你的意見草擬一個——你可以修改或替換它。
     </p>
     <div class="question-field">
       <input
@@ -98,7 +94,7 @@
         class={["q-generate", { loading: questionGenerating }]}
         onclick={onGenerateQuestion}
         disabled={!opinion.trim() || questionGenerating}
-        title="Draft a question from your opinion"
+        title="根據你的意見草擬一個問題"
       >
         {#if questionGenerating}
           <span class="typing-dots small"
@@ -107,22 +103,22 @@
           Suggesting
         {:else}
           <Icon name="spark" />
-          {questionSet ? "Rewrite" : "Suggest one"}
+          {questionSet ? "重寫" : "幫我建議一個"}
         {/if}
       </button>
     </div>
     <div class="muted text-sans" style="font-size: 12px; margin-top: 8px;">
       {questionSet
-        ? "This will sit above the conversation as your anchor."
-        : "Leaving this blank? That's fine — we'll generate one when you begin."}
+        ? "這會放在對話上方，作為你的定錨。"
+        : "想留白嗎？沒問題——你開始時我們會幫你產生一個。"}
     </div>
   </div>
 
   <div style="margin-bottom: 24px;">
     <div class="field-head">
-      <h2>How firm does that feel?</h2>
+      <h2>這個想法有多堅定？</h2>
       <span class="muted text-sans" style="font-size: 12px;">
-        we'll quietly check in again at the end
+        我們會在最後悄悄再確認一次
       </span>
     </div>
     <input
@@ -136,19 +132,19 @@
       style="margin-top: 14px;"
     />
     <div class="stance-labels">
-      <span>Really not sure</span>
+      <span>非常不確定</span>
       <span style="color: var(--ink); font-weight: 500;"
-        >{confidence}% confident</span
+        >{confidence}% 確定</span
       >
-      <span>Quite sure</span>
+      <span>相當確定</span>
     </div>
   </div>
 
   <div style="margin-bottom: 28px;">
     <div class="field-head">
-      <h2>And how does it feel to think about?</h2>
+      <h2>想到它時，是什麼感覺？</h2>
       <span class="muted text-sans" style="font-size: 12px;"
-        >optional · pick any that fit</span
+        >選填 · 符合的都可以選</span
       >
     </div>
     <div class="feeling-chips" style="margin-top: 10px;">
@@ -166,22 +162,21 @@
   <div class="safety" style="margin-top: 28px;">
     <Icon name="shield" />
     <div>
-      <strong>This stays with you.</strong> Nothing is posted automatically. You decide
-      what — if anything — leaves this page. You can pause or quit any time.
+      <strong>這一切只屬於你。</strong> 沒有任何內容會自動發佈。要不要讓任何東西離開這個頁面，都由你決定。你隨時可以暫停或退出。
     </div>
   </div>
 
   <div class="row-between" style="margin-top: 32px;">
     <span class="muted text-sans" style="font-size: 13px;">
-      ~10–15 minutes. Come back any time.
+      大約 10–15 分鐘。隨時都能回來。
     </span>
     <button
       class="btn btn-primary"
       disabled={!ready}
       onclick={onBegin}
-      title={ready ? "" : "Write your opinion first"}
+      title={ready ? "" : "請先寫下你的意見"}
     >
-      Begin reflecting <Icon name="arrow" class="btn-arrow" />
+      開始反思 <Icon name="arrow" class="btn-arrow" />
     </button>
   </div>
 </div>

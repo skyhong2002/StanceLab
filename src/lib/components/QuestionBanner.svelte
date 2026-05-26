@@ -55,7 +55,7 @@
 			onkeydown={onKey}
 		/>
 	{:else}
-		<span class="anchor-text">{question || 'What am I trying to think through here?'}</span>
+		<span class="anchor-text">{question || '我到底想釐清的是什麼？'}</span>
 	{/if}
 	{#if !editing}
 		<button
@@ -64,7 +64,7 @@
 				e.stopPropagation();
 				editing = true;
 			}}
-			title="Edit the question"
+			title="編輯問題"
 		>
 			<Icon name="edit" />
 		</button>

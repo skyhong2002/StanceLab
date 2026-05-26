@@ -82,9 +82,9 @@
 		<div class="pane-title">
 			<span class="pane-title-icon"><Icon name="message" /></span>
 			<div>
-				<div class="pane-title-main">Three voices</div>
+				<div class="pane-title-main">三種聲音</div>
 				<div class="pane-title-sub">
-					{completedExchanges} exchange{completedExchanges === 1 ? '' : 's'}
+					{completedExchanges} 次往返
 				</div>
 			</div>
 		</div>
@@ -92,7 +92,7 @@
 			<button
 				class="mini-btn"
 				onclick={onToggleFullscreen}
-				title={isFullscreen ? 'Restore split view' : 'Fullscreen this pane'}
+				title={isFullscreen ? '恢復分割檢視' : '將此面板全螢幕'}
 			>
 				{#if isFullscreen}<Icon name="collapse" />{:else}<Icon name="expand" />{/if}
 			</button>
@@ -105,10 +105,9 @@
 		{#if turns.length === 0 && !isThinking}
 			<div class="empty-convo">
 				<div class="empty-convo-mark"><Icon name="spark" /></div>
-				<h3>Ready when you are.</h3>
+				<h3>準備好了就開始。</h3>
 				<p>
-					Your opinion is already in the composer below. Edit it, or send as-is — all three voices
-					respond at once.
+					你的意見已經在下方的輸入框裡了。修改它，或直接送出——三種聲音會同時回應。
 				</p>
 			</div>
 		{/if}
@@ -150,8 +149,7 @@
 			<div class="pause-card">
 				<Icon name="pause" />
 				<div>
-					You've been at this for a few exchanges. There's no rush — your notepad will be here when
-					you come back.
+					你已經來回了好幾輪。別著急——你回來時，記事本都還會在這裡。
 				</div>
 			</div>
 		{/if}
@@ -161,8 +159,8 @@
 		<div class="composer-inner">
 			<textarea
 				placeholder={turns.length === 0
-					? 'Your opinion is here — edit it, or send as-is.'
-					: 'Reply to whichever voice felt most useful.'}
+					? '你的意見在這裡——修改它，或直接送出。'
+					: '回覆你覺得最有幫助的那個聲音。'}
 				value={currentInput}
 				oninput={(e) => onCurrentInput(e.currentTarget.value)}
 				onkeydown={onKey}
@@ -172,14 +170,14 @@
 			<div class="composer-row">
 				<span class="composer-hint">
 					<Icon name="message" />
-					<span class="kbd">⌘</span> <span class="kbd">↵</span> · all three respond
+					<span class="kbd">⌘</span> <span class="kbd">↵</span> · 三者皆回應
 				</span>
 				<button
 					class="btn btn-primary btn-sm"
 					disabled={!currentInput.trim() || isThinking}
 					onclick={onSend}
 				>
-					{isThinking ? 'Thinking…' : 'Send'}
+					{isThinking ? '思考中…' : '送出'}
 					{#if !isThinking}<Icon name="arrow" class="btn-arrow" />{/if}
 				</button>
 			</div>

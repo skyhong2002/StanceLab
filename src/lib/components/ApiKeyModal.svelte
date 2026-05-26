@@ -29,19 +29,19 @@
     error = "";
   }
 
-  function save() {
-    const k = keyDraft.trim();
-    if (!k) {
-      error = `Paste your ${providerMeta.name} key, or use demo mode below.`;
-      return;
-    }
-    settings.apiProvider = providerDraft;
-    settings.apiKey = k;
-    settings.model =
-      modelDraft.trim() || DEFAULT_MODEL_BY_PROVIDER[providerDraft];
-    settings.demoMode = false;
-    onClose();
-  }
+	function save() {
+		const k = keyDraft.trim();
+		if (!k) {
+			error = `Paste your ${providerMeta.name} key, or use demo mode below.`;
+			return;
+		}
+		settings.apiProvider = providerDraft;
+		settings.apiKey = k;
+		settings.model =
+			modelDraft.trim() || DEFAULT_MODEL_BY_PROVIDER[providerDraft];
+		settings.demoMode = false;
+		onClose();
+	}
 
   function useDemo() {
     settings.demoMode = true;
