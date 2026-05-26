@@ -9,9 +9,18 @@
 
 	let editing = $state(false);
 	let draft = $state('');
+	let inputEl: HTMLInputElement = $state()!;
 
 	$effect(() => {
-		draft = question;
+		if (!editing) {
+			draft = question;
+		}
+	});
+
+	$effect(() => {
+		if (editing) {
+			inputEl?.focus();
+		}
 	});
 
 	function commit() {
@@ -47,7 +56,7 @@
 	<span class="anchor-quote">“</span>
 	{#if editing}
 		<input
-			autofocus
+			bind:this={inputEl}
 			class="anchor-input"
 			value={draft}
 			oninput={(e) => (draft = e.currentTarget.value)}

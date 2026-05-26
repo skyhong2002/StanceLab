@@ -30,6 +30,12 @@
     onBegin,
   }: Props = $props();
 
+  let textareaEl: HTMLTextAreaElement = $state()!;
+
+  $effect(() => {
+    textareaEl?.focus();
+  });
+
   const ready = $derived(opinion.trim().length > 0);
   const questionSet = $derived(question.trim().length > 0);
 
@@ -56,12 +62,12 @@
       一句話或一段話都行。歡迎自相矛盾——別急著把它們抹平。
     </p>
     <textarea
+      bind:this={textareaEl}
       class="field"
       rows={5}
       placeholder="例如：我不認為課堂上應該禁用 AI，但我一直想到那些付不起付費版本的學生——而我對此沒有一個漂亮的答案。"
       value={opinion}
       oninput={(e) => onOpinion(e.currentTarget.value)}
-      autofocus
     ></textarea>
     <div class="field-row">
       <span class="muted text-sans" style="font-size: 12px;">
