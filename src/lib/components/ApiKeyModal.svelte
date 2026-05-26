@@ -71,7 +71,7 @@
         <div>
           <div class="pane-title-main">Add an API key</div>
           <div class="pane-title-sub">
-            Mentora's three voices and question generator use your selected
+            StanceLab's three voices and question generator use your selected
             provider for model calls.
           </div>
         </div>
@@ -169,7 +169,7 @@
             <strong>Your key stays in this browser.</strong> We never send it anywhere
             except OpenRouter.
           {:else}
-            <strong>Your key is not stored by Mentora.</strong> It is forwarded through
+            <strong>Your key is not stored by StanceLab.</strong> It is forwarded through
             this app only because OpenCode Go blocks browser-direct requests.
           {/if}
         </div>
