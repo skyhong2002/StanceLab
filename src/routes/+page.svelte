@@ -314,7 +314,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "mentora-post.txt";
+    a.download = "stancelab-post.txt";
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -343,7 +343,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "mentora-session.json";
+    a.download = "stancelab-session.json";
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -376,7 +376,7 @@
 <header class="topbar">
   <div class="brand">
     <span class="brand-mark"></span>
-    Mentora <small>· think before you share</small>
+    StanceLab <small>· think before you share</small>
   </div>
 
   <div class="topbar-actions">

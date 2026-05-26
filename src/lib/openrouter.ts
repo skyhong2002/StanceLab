@@ -39,7 +39,7 @@ export async function chat(
   if (apiProvider.id === "openrouter") {
     headers["HTTP-Referer"] =
       typeof window !== "undefined" ? window.location.origin : "";
-    headers["X-Title"] = "Mentora";
+    headers["X-Title"] = "StanceLab";
   }
 
   const res = await fetch(apiProvider.endpoint, {

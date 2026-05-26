@@ -1,7 +1,7 @@
 import { browser } from "$app/environment";
 import { DEFAULT_PROMPTS, type PersonaKind } from "$lib/data/personas";
 
-const STORAGE_KEY = "mentora.settings.v1";
+const STORAGE_KEY = "stancelab.settings.v1";
 export type ApiProviderId = "openrouter" | "opencode-go";
 
 export interface ApiProviderOption {
