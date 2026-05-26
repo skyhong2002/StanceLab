@@ -39,13 +39,12 @@
 </script>
 
 <div class="page" style="max-width: 720px;">
-	<p class="eyebrow">You shared it</p>
+	<p class="eyebrow">你分享了它</p>
 	<h1 class="display" style="font-size: clamp(34px, 4vw, 48px);">
-		Nicely done. <em>That's the hard part.</em>
+		做得好。<em>那才是最難的部分。</em>
 	</h1>
 	<p class="lead" style="margin-bottom: 32px;">
-		We're treating this as posted. What you wrote is yours — keep it, edit it later, or share it
-		again in a different room. The conversation is what matters now.
+		我們把這視為已發佈。你寫下的內容是你的——留著它、之後再修改，或在另一個場合再次分享。現在重要的是接下來的對話。
 	</p>
 
 	<div class="paper-soft" style="margin-bottom: 24px;">
@@ -53,7 +52,7 @@
 			class="muted text-sans"
 			style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;"
 		>
-			What you shared
+			你分享的內容
 		</div>
 		<div
 			style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink); white-space: pre-wrap;"
@@ -65,21 +64,20 @@
 	<div class="row" style="gap: 10px; margin-bottom: 32px;">
 		<button class="btn btn-ghost btn-sm" onclick={handleCopy}>
 			{#if copied}
-				<Icon name="check" /> Copied
+				<Icon name="check" /> 已複製
 			{:else}
-				<Icon name="copy" /> Copy again
+				<Icon name="copy" /> 再次複製
 			{/if}
 		</button>
 		<button class="btn btn-ghost btn-sm" onclick={onExport}>
-			<Icon name="download" /> Save as text
+			<Icon name="download" /> 儲存為文字檔
 		</button>
 	</div>
 
 	<div class="paper-soft" style="margin-bottom: 24px;">
-		<h2 style="margin-bottom: 6px;">Where do you sit now?</h2>
+		<h2 style="margin-bottom: 6px;">你現在的立場在哪？</h2>
 		<p class="muted text-sans" style="font-size: 13px; margin: 0 0 18px;">
-			You started at <strong style="color: var(--ink);">{confidence}% sure</strong>. No right
-			answer — this is just for you.
+			你一開始是 <strong style="color: var(--ink);">{confidence}% 確定</strong>。沒有正確答案——這只是給你自己看的。
 		</p>
 		<input
 			type="range"
@@ -91,14 +89,13 @@
 			class="stance-slider"
 		/>
 		<div class="stance-labels">
-			<span>Less sure</span>
+			<span>比較不確定</span>
 			<span style="color: var(--ink); font-weight: 500;">{shownConfidence}%</span>
-			<span>More sure</span>
+			<span>比較確定</span>
 		</div>
 		{#if moved && postConfidence !== null}
 			<p style="margin-top: 12px; font-size: 14px; font-style: italic; color: var(--ink-2);">
-				You've moved {Math.abs(postConfidence - confidence)} points
-				{postConfidence > confidence ? 'toward more sure' : 'toward less sure'}. Worth noticing.
+				你往{postConfidence > confidence ? '更確定' : '更不確定'}的方向移動了 {Math.abs(postConfidence - confidence)} 個百分點。值得留意。
 			</p>
 		{/if}
 	</div>
@@ -106,18 +103,16 @@
 	<div class="safety" style="margin-bottom: 28px;">
 		<Icon name="hand" />
 		<div>
-			<strong>One small ask.</strong> If a response from your group changes your mind — even a little
-			— come back here and write that down. The point isn't to be right; it's to be honest about how
-			thinking moves.
+			<strong>一個小小的請求。</strong> 如果群組裡的某個回應改變了你的想法——哪怕只有一點點——回到這裡把它寫下來。重點不在於正確，而在於誠實面對思考是如何流動的。
 		</div>
 	</div>
 
 	<div class="row-between" style="margin-top: 16px;">
 		<button class="btn btn-ghost" onclick={onBack}>
-			<Icon name="arrowLeft" class="btn-arrow" /> Back to my notepad
+			<Icon name="arrowLeft" class="btn-arrow" /> 回到我的記事本
 		</button>
 		<button class="btn btn-primary" onclick={onRestart}>
-			<Icon name="refresh" /> Start a new session
+			<Icon name="refresh" /> 開始新的對話
 		</button>
 	</div>
 </div>

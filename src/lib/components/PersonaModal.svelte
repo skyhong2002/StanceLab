@@ -39,10 +39,10 @@
 				{meta.name}
 				<span class="persona-tag">{meta.tagline}</span>
 			</div>
-			<button class="icon-btn" onclick={onClose}><Icon name="close" /> Close</button>
+			<button class="icon-btn" onclick={onClose}><Icon name="close" /> 關閉</button>
 		</header>
 		<div class="modal-body">
-			<div class="modal-context">in reply to:</div>
+			<div class="modal-context">回覆：</div>
 			<div class="turn-user" style="margin-bottom: 22px;">{turn.user}</div>
 			<div class="persona-body" style="font-size: 18px; line-height: 1.65;">
 				{#each paragraphs as para, i (i)}
@@ -58,7 +58,7 @@
 					onClose();
 				}}
 			>
-				<Icon name="copy" /> Quote into notepad
+				<Icon name="copy" /> 引用到記事本
 			</button>
 			<button
 				class="btn btn-primary btn-sm"
@@ -67,7 +67,7 @@
 					onClose();
 				}}
 			>
-				<Icon name="reply" /> Reply to this
+				<Icon name="reply" /> 回覆這則
 			</button>
 		</footer>
 	</div>
