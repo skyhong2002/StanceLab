@@ -29,19 +29,19 @@
     error = "";
   }
 
-	function save() {
-		const k = keyDraft.trim();
-		if (!k) {
-			error = `Paste your ${providerMeta.name} key, or use demo mode below.`;
-			return;
-		}
-		settings.apiProvider = providerDraft;
-		settings.apiKey = k;
-		settings.model =
-			modelDraft.trim() || DEFAULT_MODEL_BY_PROVIDER[providerDraft];
-		settings.demoMode = false;
-		onClose();
-	}
+  function save() {
+    const k = keyDraft.trim();
+    if (!k) {
+      error = `Paste your ${providerMeta.name} key, or use demo mode below.`;
+      return;
+    }
+    settings.apiProvider = providerDraft;
+    settings.apiKey = k;
+    settings.model =
+      modelDraft.trim() || DEFAULT_MODEL_BY_PROVIDER[providerDraft];
+    settings.demoMode = false;
+    onClose();
+  }
 
   function useDemo() {
     settings.demoMode = true;
@@ -169,8 +169,8 @@
             <strong>Your key stays in this browser.</strong> We never send it anywhere
             except OpenRouter.
           {:else}
-            <strong>Your key is not stored by StanceLab.</strong> It is forwarded through
-            this app only because OpenCode Go blocks browser-direct requests.
+            <strong>Your key is not stored by StanceLab.</strong> It is forwarded
+            through this app only because OpenCode Go blocks browser-direct requests.
           {/if}
         </div>
       </div>

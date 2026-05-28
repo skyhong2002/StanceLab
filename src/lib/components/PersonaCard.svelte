@@ -114,6 +114,8 @@
             {/if}
           </div>
         {/if}
+      {:else if isStreaming}
+        <span class="streaming-cursor">▍</span>
       {/if}
     </div>
     {#if !isLoading && !error && !isStreaming}

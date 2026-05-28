@@ -815,7 +815,6 @@ input.field::placeholder {
 }
 .helpful-btn.active {
   background: var(--accent);
-  color: oklch(0.2 0.02 var(--ink));
   border-color: var(--accent);
   color: var(--ink);
 }

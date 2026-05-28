@@ -28,6 +28,13 @@
   let query = $state("");
   let highlighted = $state(0);
 
+  $effect(() => {
+    const isCustom =
+      value !== "" && !getSuggestedModels(apiProvider).includes(value);
+    customMode = isCustom;
+    customDraft = isCustom ? value : "";
+  });
+
   let triggerEl: HTMLButtonElement | undefined = $state();
   let menuEl: HTMLDivElement | undefined = $state();
   let searchEl: HTMLInputElement | undefined = $state();
