@@ -185,6 +185,15 @@
     const messages = buildMessages(kind, priorTurns, userMsg);
     let accumulated = "";
 
+    // Ensure responses object exists so onChunk can write to it
+    const existing = turns[turnIdx];
+    if (!existing.responses) {
+      turns[turnIdx] = {
+        ...existing,
+        responses: {} as Record<PersonaKind, string>,
+      };
+    }
+
     try {
       const fullText = await chatStream(messages, {
         maxTokens: 2000,
@@ -227,12 +236,6 @@
       streaming: [...PERSONAS],
     };
     turns = [...turns, newTurn];
-    // Initialize empty responses object so cards show partial content
-    turns = turns.map((t, i) =>
-      i === turnIdx
-        ? { ...t, responses: {} as Record<PersonaKind, string> }
-        : t,
-    );
     isThinking = true;
 
     if (!settings.apiKey || settings.demoMode) {
@@ -269,7 +272,6 @@
   async function retryPersona(idx: number, p: PersonaKind) {
     const t = turns[idx];
     if (!t) return;
-    // Clear that persona's error/response/thinking and re-call.
     turns = turns.map((tt, i) => {
       if (i !== idx) return tt;
       const responses = { ...(tt.responses ?? {}) } as Partial<
@@ -292,6 +294,7 @@
         streaming,
       };
     });
+    isThinking = true;
     if (!settings.apiKey || settings.demoMode) {
       setTimeout(() => {
         const scripted =
@@ -312,10 +315,15 @@
             streaming,
           };
         });
+        isThinking = false;
       }, 800);
       return;
     }
-    await streamPersona(idx, p, t.user);
+    try {
+      await streamPersona(idx, p, t.user);
+    } finally {
+      isThinking = false;
+    }
   }
 
   function chooseHelpful(idx: number, p: PersonaKind) {
@@ -391,11 +399,13 @@
     step = "start";
     opinion = "";
     question = "";
+    questionGenerating = false;
     confidence = 50;
     feeling = [];
     turns = [];
     notepad = "";
     postConfidence = null;
+    isThinking = false;
     pauseShown = false;
     fullscreen = null;
     expandedPersona = null;
@@ -512,16 +522,16 @@
     />
   </div>
 {:else if step === "complete"}
-	<CompleteScreen
-		{notepad}
-		{confidence}
-		{postConfidence}
-		onPostConfidence={(v) => (postConfidence = v)}
-		onExport={exportText}
-		onExportSession={exportSession}
-		onRestart={restart}
-		onBack={() => (step = "workspace")}
-	/>
+  <CompleteScreen
+    {notepad}
+    {confidence}
+    {postConfidence}
+    onPostConfidence={(v) => (postConfidence = v)}
+    onExport={exportText}
+    onExportSession={exportSession}
+    onRestart={restart}
+    onBack={() => (step = "workspace")}
+  />
 {/if}
 
 {#if step === "workspace" && expandedPersona && turns[expandedPersona.t]?.responses}
