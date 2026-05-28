@@ -14,13 +14,14 @@
     QUESTION_SUGGESTIONS,
     SCRIPTED_TURNS,
     type PersonaKind,
-    type ScriptedTurn,
     type Turn,
   } from "$lib/data/personas";
   import { settings } from "$lib/stores/settings.svelte";
   import {
-    chat,
+    chatStream,
+    streamingVisibleText,
     suggestQuestion,
+    parseThinkingResponse,
     OpenRouterError,
     type ChatMessage,
   } from "$lib/openrouter";
@@ -92,7 +93,9 @@
 
   // pause nudge after 3 completed turns
   $effect(() => {
-    const completed = turns.filter((t) => t.responses).length;
+    const completed = turns.filter(
+      (t) => t.responses && (!t.streaming || t.streaming.length === 0),
+    ).length;
     if (completed >= 3 && !pauseShown) pauseShown = true;
   });
 
@@ -173,41 +176,41 @@
     return String(reason);
   }
 
-  async function callPersonas(
+  async function streamPersona(
     turnIdx: number,
+    kind: PersonaKind,
     userMsg: string,
-    kinds: readonly PersonaKind[],
   ) {
     const priorTurns = turns.slice(0, turnIdx);
-    const results = await Promise.allSettled(
-      kinds.map((k) =>
-        chat(buildMessages(k, priorTurns, userMsg), {
-          maxTokens: 500,
-          temperature: 0.8,
-        }),
-      ),
-    );
-    turns = turns.map((t, i) => {
-      if (i !== turnIdx) return t;
-      const nextResponses: Partial<ScriptedTurn> = { ...(t.responses ?? {}) };
-      const nextErrors: Partial<Record<PersonaKind, string>> = {
-        ...(t.errors ?? {}),
-      };
-      results.forEach((r, j) => {
-        const k = kinds[j];
-        if (r.status === "fulfilled") {
-          nextResponses[k] = r.value;
-          delete nextErrors[k];
-        } else {
-          nextErrors[k] = describeError(r.reason);
-        }
+    const messages = buildMessages(kind, priorTurns, userMsg);
+    let accumulated = "";
+
+    try {
+      const fullText = await chatStream(messages, {
+        maxTokens: 2000,
+        temperature: 0.8,
+        onChunk: (chunk) => {
+          accumulated += chunk;
+          const visible = streamingVisibleText(accumulated);
+          const t = turns[turnIdx];
+          if (t.responses) {
+            t.responses[kind] = visible;
+          }
+        },
       });
-      return {
-        ...t,
-        responses: nextResponses as ScriptedTurn,
-        errors: nextErrors,
-      };
-    });
+
+      const parsed = parseThinkingResponse(fullText);
+      const t = turns[turnIdx];
+      if (t.responses) {
+        t.responses[kind] = parsed.response;
+      }
+      t.thinking = { ...(t.thinking ?? {}), [kind]: parsed.thinking };
+      t.streaming = (t.streaming ?? []).filter((k) => k !== kind);
+    } catch (err) {
+      const t = turns[turnIdx];
+      t.errors = { ...(t.errors ?? {}), [kind]: describeError(err) };
+      t.streaming = (t.streaming ?? []).filter((k) => k !== kind);
+    }
   }
 
   async function send() {
@@ -218,20 +221,36 @@
     const newTurn: Turn = {
       user: userMsg,
       responses: null,
+      thinking: {},
       helpful: null,
       errors: {},
+      streaming: [...PERSONAS],
     };
     turns = [...turns, newTurn];
+    // Initialize empty responses object so cards show partial content
+    turns = turns.map((t, i) =>
+      i === turnIdx
+        ? { ...t, responses: {} as Record<PersonaKind, string> }
+        : t,
+    );
     isThinking = true;
 
     if (!settings.apiKey || settings.demoMode) {
       setTimeout(() => {
         const scripted =
           SCRIPTED_TURNS[Math.min(turnIdx, SCRIPTED_TURNS.length - 1)];
+        const responses: Record<PersonaKind, string> = {
+          interviewer: scripted.interviewer.response,
+          mentor: scripted.mentor.response,
+          opponent: scripted.opponent.response,
+        };
+        const thinking: Partial<Record<PersonaKind, string>> = {
+          interviewer: scripted.interviewer.thinking,
+          mentor: scripted.mentor.thinking,
+          opponent: scripted.opponent.thinking,
+        };
         turns = turns.map((t, i) =>
-          i === turnIdx
-            ? { ...t, responses: { ...scripted } as ScriptedTurn }
-            : t,
+          i === turnIdx ? { ...t, responses, thinking, streaming: [] } : t,
         );
         isThinking = false;
       }, 1400);
@@ -239,7 +258,9 @@
     }
 
     try {
-      await callPersonas(turnIdx, userMsg, PERSONAS);
+      await Promise.allSettled(
+        PERSONAS.map((k) => streamPersona(turnIdx, k, userMsg)),
+      );
     } finally {
       isThinking = false;
     }
@@ -248,18 +269,27 @@
   async function retryPersona(idx: number, p: PersonaKind) {
     const t = turns[idx];
     if (!t) return;
-    // Clear that persona's error/response and re-call.
+    // Clear that persona's error/response/thinking and re-call.
     turns = turns.map((tt, i) => {
       if (i !== idx) return tt;
-      const responses = { ...(tt.responses ?? {}) } as Partial<ScriptedTurn>;
+      const responses = { ...(tt.responses ?? {}) } as Partial<
+        Record<PersonaKind, string>
+      >;
       delete responses[p];
+      const thinking = { ...(tt.thinking ?? {}) };
+      delete thinking[p];
       const errors = { ...(tt.errors ?? {}) };
       delete errors[p];
       const stillHasResponses = Object.keys(responses).length > 0;
+      const streaming = [...(tt.streaming ?? []).filter((k) => k !== p), p];
       return {
         ...tt,
-        responses: stillHasResponses ? (responses as ScriptedTurn) : null,
+        responses: stillHasResponses
+          ? (responses as Record<PersonaKind, string>)
+          : ({} as Record<PersonaKind, string>),
+        thinking: Object.keys(thinking).length > 0 ? thinking : {},
         errors,
+        streaming,
       };
     });
     if (!settings.apiKey || settings.demoMode) {
@@ -270,14 +300,22 @@
           if (i !== idx) return tt;
           const responses = {
             ...(tt.responses ?? {}),
-          } as Partial<ScriptedTurn>;
-          responses[p] = scripted[p];
-          return { ...tt, responses: responses as ScriptedTurn };
+          } as Partial<Record<PersonaKind, string>>;
+          responses[p] = scripted[p].response;
+          const thinking = { ...(tt.thinking ?? {}) };
+          thinking[p] = scripted[p].thinking;
+          const streaming = (tt.streaming ?? []).filter((k) => k !== p);
+          return {
+            ...tt,
+            responses: responses as Record<PersonaKind, string>,
+            thinking,
+            streaming,
+          };
         });
       }, 800);
       return;
     }
-    await callPersonas(idx, t.user, [p]);
+    await streamPersona(idx, p, t.user);
   }
 
   function chooseHelpful(idx: number, p: PersonaKind) {
@@ -288,7 +326,7 @@
 
   function useAsFollowUp(persona: PersonaKind, body: string) {
     void body;
-    const seed = `Picking up on the ${persona}'s point: `;
+    const seed = `接續${PERSONA_META[persona].name}的觀點：`;
     currentInput = seed;
     setTimeout(() => {
       if (composerEl) {
@@ -329,6 +367,7 @@
       turns: turns.map((t) => ({
         user: t.user,
         responses: t.responses,
+        thinking: t.thinking,
         helpful: t.helpful,
       })),
       prompts: settings.prompts,
@@ -473,15 +512,16 @@
     />
   </div>
 {:else if step === "complete"}
-  <CompleteScreen
-    {notepad}
-    {confidence}
-    {postConfidence}
-    onPostConfidence={(v) => (postConfidence = v)}
-    onExport={exportText}
-    onRestart={restart}
-    onBack={() => (step = "workspace")}
-  />
+	<CompleteScreen
+		{notepad}
+		{confidence}
+		{postConfidence}
+		onPostConfidence={(v) => (postConfidence = v)}
+		onExport={exportText}
+		onExportSession={exportSession}
+		onRestart={restart}
+		onBack={() => (step = "workspace")}
+	/>
 {/if}
 
 {#if step === "workspace" && expandedPersona && turns[expandedPersona.t]?.responses}

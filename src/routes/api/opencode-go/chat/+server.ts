@@ -15,14 +15,34 @@ export const POST: RequestHandler = async ({ request }) => {
     );
   }
 
+  const bodyText = await request.text();
+  let isStream = false;
+  try {
+    isStream = JSON.parse(bodyText).stream === true;
+  } catch {
+    // ignore parse errors, treat as non-streaming
+  }
+
   const upstream = await fetch(OPENCODE_GO_CHAT_ENDPOINT, {
     method: "POST",
     headers: {
       Authorization: authorization,
-      "Content-Type": request.headers.get("content-type") ?? "application/json",
+      "Content-Type": "application/json",
     },
-    body: await request.text(),
+    body: bodyText,
   });
+
+  if (isStream && upstream.body) {
+    return new Response(upstream.body, {
+      status: upstream.status,
+      statusText: upstream.statusText,
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+    });
+  }
 
   return new Response(await upstream.text(), {
     status: upstream.status,
