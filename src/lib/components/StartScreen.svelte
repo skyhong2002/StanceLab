@@ -91,7 +91,7 @@
       <input
         type="text"
         class="field"
-        placeholder="e.g. Should AI tools be allowed in undergraduate classrooms?"
+        placeholder="例如：大學課堂應該允許使用 AI 工具嗎？"
         value={question}
         oninput={(e) => onQuestion(e.currentTarget.value)}
       />
