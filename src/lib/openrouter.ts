@@ -80,7 +80,7 @@ export async function suggestQuestion(
       {
         role: "system",
         content:
-          'Suggest ONE short open-ended question (15 words max) that captures the core tension in the user\'s stance. Prefer yes/no or "should" style. Reply with ONLY the question — no quotes, no preamble.',
+          '請根據使用者的立場，建議一則簡短的開放式問題（20字以內），捕捉其核心張力。偏好是非題或「應該」句式。只回覆問題本身——不要引號、不要前言。',
       },
       { role: "user", content: opinion },
     ],
