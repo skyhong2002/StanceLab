@@ -7,6 +7,7 @@
 		postConfidence: number | null;
 		onPostConfidence: (v: number) => void;
 		onExport: () => void;
+		onExportSession: () => void;
 		onRestart: () => void;
 		onBack: () => void;
 	}
@@ -17,6 +18,7 @@
 		postConfidence,
 		onPostConfidence,
 		onExport,
+		onExportSession,
 		onRestart,
 		onBack
 	}: Props = $props();
@@ -71,6 +73,9 @@
 		</button>
 		<button class="btn btn-ghost btn-sm" onclick={onExport}>
 			<Icon name="download" /> 儲存為文字檔
+		</button>
+		<button class="btn btn-ghost btn-sm" onclick={onExportSession}>
+			<Icon name="download" /> 匯出對話 JSON
 		</button>
 	</div>
 

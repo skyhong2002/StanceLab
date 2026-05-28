@@ -1,11 +1,14 @@
 <script lang="ts">
   import Icon from "./Icon.svelte";
   import { PERSONA_META, type PersonaKind } from "$lib/data/personas";
+  import { renderMarkdown } from "$lib/markdown";
 
   interface Props {
     kind: PersonaKind;
     body: string | null;
+    thinking: string | null;
     isLoading: boolean;
+    isStreaming: boolean;
     error?: string;
     isSelected: boolean;
     collapsed: boolean;
@@ -21,7 +24,9 @@
   let {
     kind,
     body,
+    thinking,
     isLoading,
+    isStreaming,
     error,
     isSelected,
     collapsed,
@@ -35,26 +40,7 @@
   }: Props = $props();
 
   const meta = $derived(PERSONA_META[kind]);
-  type BodyBlock =
-    | { type: "heading"; text: string }
-    | { type: "paragraph"; text: string };
-
-  function renderBlocks(text: string): BodyBlock[] {
-    const blocks: BodyBlock[] = [];
-    for (const raw of text.split(/\n{2,}/)) {
-      const value = raw.trim();
-      if (!value) continue;
-      const heading = value.match(/^#{1,3}\s+(.+)$/);
-      if (heading) {
-        blocks.push({ type: "heading", text: heading[1].trim() });
-      } else {
-        blocks.push({ type: "paragraph", text: value.replace(/\n/g, " ") });
-      }
-    }
-    return blocks;
-  }
-
-  const bodyBlocks = $derived(body ? renderBlocks(body) : []);
+  let showThinking = $state(false);
 </script>
 
 <div
@@ -71,7 +57,7 @@
       <span class="persona-tag">{meta.tagline}</span>
     </button>
     <div class="persona-head-actions">
-      {#if !isLoading && !error}
+      {#if !isLoading && !error && !isStreaming}
         <button
           class="mini-btn"
           onclick={onSendToNotepad}
@@ -106,16 +92,31 @@
           <span class="muted text-sans" style="font-size: 12px;">{error}</span>
         </p>
       {:else if body}
-        {#each bodyBlocks as block, i (i)}
-          {#if block.type === "heading"}
-            <h4>{block.text}</h4>
-          {:else}
-            <p>{block.text}</p>
-          {/if}
-        {/each}
+        <div class="chat-response">
+          {@html renderMarkdown(body)}
+        </div>
+        {#if isStreaming}
+          <span class="streaming-cursor">▍</span>
+        {/if}
+        {#if thinking}
+          <div class="thinking-section">
+            <button
+              class="thinking-toggle"
+              onclick={() => (showThinking = !showThinking)}
+            >
+              <Icon name={showThinking ? "chevronUp" : "chevronDown"} />
+              {showThinking ? "隱藏思考過程" : "查看思考過程"}
+            </button>
+            {#if showThinking}
+              <div class="thinking-content">
+                {thinking}
+              </div>
+            {/if}
+          </div>
+        {/if}
       {/if}
     </div>
-    {#if !isLoading && !error}
+    {#if !isLoading && !error && !isStreaming}
       <div class="persona-foot">
         <button
           class={["helpful-btn", { active: isSelected }]}

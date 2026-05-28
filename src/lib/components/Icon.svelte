@@ -25,6 +25,8 @@
 		| 'message'
 		| 'expand'
 		| 'collapse'
+		| 'chevronUp'
+		| 'chevronDown'
 		| 'key';
 </script>
 
@@ -55,6 +57,8 @@
 		MessageSquare,
 		Maximize2,
 		Minimize2,
+		ChevronUp,
+		ChevronDown,
 		Key
 	} from '@lucide/svelte';
 
@@ -90,6 +94,8 @@
 		message: MessageSquare,
 		expand: Maximize2,
 		collapse: Minimize2,
+		chevronUp: ChevronUp,
+		chevronDown: ChevronDown,
 		key: Key
 	} as const;
 
