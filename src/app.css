@@ -1361,26 +1361,6 @@ input.field::placeholder {
 }
 
 /* breath / pause moment */
-.pause-card {
-  background: oklch(0.96 0.025 145);
-  border: 1px dashed oklch(0.78 0.05 145);
-  border-radius: var(--r);
-  padding: 14px 18px;
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  font-family: var(--serif);
-  font-size: 15px;
-  color: oklch(0.32 0.04 145);
-  font-style: italic;
-}
-.pause-card svg {
-  width: 22px;
-  height: 22px;
-  color: oklch(0.5 0.06 145);
-  animation: drift 3s ease-in-out infinite;
-}
-
 /* streaming cursor */
 .streaming-cursor {
   display: inline-block;
@@ -2194,11 +2174,6 @@ body.softer {
   padding: 14px 24px;
   border-top: 1px solid var(--rule-soft);
   background: var(--paper-2);
-}
-
-/* Pause card in workspace */
-.pane-convo .pause-card {
-  margin: 0 0 18px;
 }
 
 /* Topbar adjustments for workspace */

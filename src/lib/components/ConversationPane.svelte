@@ -20,7 +20,6 @@
     onExpandPersona: (v: { t: number; p: PersonaKind } | null) => void;
     isFullscreen: boolean;
     onToggleFullscreen: () => void;
-    showPauseNudge: boolean;
     composerRef: (el: HTMLTextAreaElement | null) => void;
   }
 
@@ -40,7 +39,6 @@
     onExpandPersona,
     isFullscreen,
     onToggleFullscreen,
-    showPauseNudge,
     composerRef,
   }: Props = $props();
 
@@ -165,12 +163,7 @@
       </div>
     {/each}
 
-    {#if showPauseNudge}
-      <div class="pause-card">
-        <Icon name="pause" />
-        <div>你已經來回了好幾輪。別著急——你回來時，記事本都還會在這裡。</div>
-      </div>
-    {/if}
+    
   </div>
 
   <div class="composer">
