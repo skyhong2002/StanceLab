@@ -190,11 +190,16 @@ export function parseThinkingResponse(text: string): {
   const responseMatch = text.match(/<response>([\s\S]*?)<\/response>/i);
 
   const thinking = thinkingMatch ? thinkingMatch[1].trim() : "";
-  const response = responseMatch ? responseMatch[1].trim() : text.trim();
 
-  // Fallback: if no tags found at all, treat entire text as response
   if (!thinkingMatch && !responseMatch) {
     return { thinking: "", response: text.trim() };
+  }
+
+  let response: string;
+  if (responseMatch) {
+    response = responseMatch[1].trim();
+  } else {
+    response = text.replace(/<thinking>[\s\S]*?<\/thinking>/i, "").trim();
   }
 
   return { thinking, response };

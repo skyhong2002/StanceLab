@@ -42,8 +42,6 @@
   let turns = $state<Turn[]>([]);
   let currentInput = $state("");
   let isThinking = $state(false);
-  let pauseShown = $state(false);
-
   // notepad
   let notepad = $state("");
   let postConfidence = $state<number | null>(null);
@@ -91,13 +89,7 @@
     }
   });
 
-  // pause nudge after 3 completed turns
-  $effect(() => {
-    const completed = turns.filter(
-      (t) => t.responses && (!t.streaming || t.streaming.length === 0),
-    ).length;
-    if (completed >= 3 && !pauseShown) pauseShown = true;
-  });
+  
 
   function fallbackQuestion() {
     return QUESTION_SUGGESTIONS[
@@ -406,7 +398,6 @@
     notepad = "";
     postConfidence = null;
     isThinking = false;
-    pauseShown = false;
     fullscreen = null;
     expandedPersona = null;
     currentInput = "";
@@ -497,7 +488,6 @@
       isFullscreen={fullscreen === "convo"}
       onToggleFullscreen={() =>
         (fullscreen = fullscreen === "convo" ? null : "convo")}
-      showPauseNudge={pauseShown}
       composerRef={(el) => (composerEl = el)}
     />
     {#if !fullscreen}
