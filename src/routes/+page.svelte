@@ -38,6 +38,7 @@
   let question = $state("");
   let questionGenerating = $state(false);
   let confidence = $state(50);
+  let postingDestination = $state("");
   let feeling = $state<string[]>([]);
 
   // workspace state
@@ -135,6 +136,8 @@
       lines.push(
         `User's starting opinion (confidence ${confidence}%): ${opinion}`,
       );
+    if (postingDestination.trim())
+      lines.push(`User plans to post this to: ${postingDestination.trim()}`);
     if (feeling.length)
       lines.push(`Feelings the user named: ${feeling.join(", ")}`);
     return `${base}\n\n${lines.join("\n")}`;
@@ -177,6 +180,8 @@
       lines.push(
         `User's starting opinion (confidence ${confidence}%): ${opinion}`,
       );
+    if (postingDestination.trim())
+      lines.push(`User plans to post this to: ${postingDestination.trim()}`);
     if (feeling.length)
       lines.push(`Feelings the user named: ${feeling.join(", ")}`);
     const systemContent = `${settings.standalonePrompt}\n\n${lines.join("\n")}`;
@@ -515,6 +520,7 @@
       opinion,
       question,
       confidence,
+      postingDestination,
       postConfidence,
       feeling,
       turns: turns.map((t) => ({
@@ -549,6 +555,7 @@
     question = "";
     questionGenerating = false;
     confidence = 50;
+    postingDestination = "";
     feeling = [];
     turns = [];
     notepad = "";
@@ -571,6 +578,7 @@
     question = "";
     questionGenerating = false;
     confidence = 50;
+    postingDestination = "";
     feeling = [];
     turns = [];
     notepad = "";
@@ -587,10 +595,10 @@
 </script>
 
 <header class="topbar">
-  <div class="brand">
+  <button class="brand" onclick={restart}>
     <span class="brand-mark"></span>
     StanceLab
-  </div>
+  </button>
 
   <div class="topbar-actions">
     <button
@@ -626,10 +634,12 @@
     {question}
     {questionGenerating}
     {confidence}
+    {postingDestination}
     {feeling}
     onOpinion={(v) => (opinion = v)}
     onQuestion={(v) => (question = v)}
     onConfidence={(v) => (confidence = v)}
+    onPostingDestination={(v) => (postingDestination = v)}
     onFeeling={(v) => (feeling = v)}
     onGenerateQuestion={generateQuestion}
     onBegin={beginReflecting}
@@ -683,6 +693,7 @@
       onToggleFullscreen={() =>
         (fullscreen = fullscreen === "notepad" ? null : "notepad")}
       onComplete={() => (step = "complete")}
+      postingDestination={postingDestination.trim() || ""}
     />
   </div>
 {:else if step === "complete"}

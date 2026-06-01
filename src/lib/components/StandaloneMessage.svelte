@@ -3,7 +3,7 @@
     Bot,
     ChevronUp,
     ChevronDown,
-    BookPlus,
+    FilePlus,
     Reply,
     RefreshCw,
   } from "@lucide/svelte";
@@ -82,19 +82,18 @@
 
   {#if !isLoading && !error && !isStreaming}
     <div class="standalone-foot">
-      <button class="notebook-btn" onclick={onSendToNotepad}>
-        <BookPlus />
-        Add to notebook
+      <button class="notebook-btn" title="Add to notebook" onclick={onSendToNotepad}>
+        <FilePlus />
       </button>
-      <button class="persona-followup" onclick={onUseAsFollowUp}>
-        <Reply /> Reply
+      <button class="persona-followup" title="Reply" onclick={onUseAsFollowUp}>
+        <Reply />
       </button>
     </div>
   {/if}
   {#if !isLoading && error}
     <div class="standalone-foot">
-      <button class="persona-followup" onclick={onRetry}>
-        <RefreshCw /> Retry
+      <button class="persona-followup" title="Retry" onclick={onRetry}>
+        <RefreshCw />
       </button>
     </div>
   {/if}
