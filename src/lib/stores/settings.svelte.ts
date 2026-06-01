@@ -1,5 +1,10 @@
 import { browser } from "$app/environment";
-import { DEFAULT_PROMPTS, type PersonaKind } from "$lib/data/personas";
+import {
+  DEFAULT_PROMPTS,
+  DEFAULT_STANDALONE_PROMPT,
+  type InteractionMode,
+  type PersonaKind,
+} from "$lib/data/personas";
 
 const STORAGE_KEY = "stancelab.settings.v1";
 export type ApiProviderId = "openrouter" | "opencode-go";
@@ -47,7 +52,9 @@ interface Persisted {
   apiKey: string;
   model: string;
   prompts: Record<PersonaKind, string>;
+  standalonePrompt: string;
   demoMode: boolean;
+  mode: InteractionMode;
 }
 
 function defaults(): Persisted {
@@ -56,7 +63,9 @@ function defaults(): Persisted {
     apiKey: "",
     model: DEFAULT_MODEL,
     prompts: { ...DEFAULT_PROMPTS },
+    standalonePrompt: DEFAULT_STANDALONE_PROMPT,
     demoMode: false,
+    mode: "personas",
   };
 }
 
@@ -76,7 +85,12 @@ function load(): Persisted {
           ? parsed.model
           : DEFAULT_MODEL_BY_PROVIDER[apiProvider],
       prompts: { ...DEFAULT_PROMPTS, ...(parsed.prompts ?? {}) },
+      standalonePrompt:
+        typeof parsed.standalonePrompt === "string" && parsed.standalonePrompt
+          ? parsed.standalonePrompt
+          : DEFAULT_STANDALONE_PROMPT,
       demoMode: !!parsed.demoMode,
+      mode: parsed.mode === "standalone" ? "standalone" : "personas",
     };
   } catch {
     return defaults();
@@ -95,7 +109,9 @@ if (browser) {
         apiKey: settings.apiKey,
         model: settings.model,
         prompts: settings.prompts,
+        standalonePrompt: settings.standalonePrompt,
         demoMode: settings.demoMode,
+        mode: settings.mode,
       });
       localStorage.setItem(STORAGE_KEY, payload);
     });
@@ -251,4 +267,8 @@ export function clearKey() {
 
 export function resetPrompts() {
   settings.prompts = { ...DEFAULT_PROMPTS };
+}
+
+export function resetStandalonePrompt() {
+  settings.standalonePrompt = DEFAULT_STANDALONE_PROMPT;
 }

@@ -1,13 +1,20 @@
 <script lang="ts">
   import { X, RefreshCw, Download } from "@lucide/svelte";
   import ModelSelect from "./ModelSelect.svelte";
-  import { PERSONA_META, PERSONAS, DEFAULT_PROMPTS } from "$lib/data/personas";
+  import {
+    PERSONA_META,
+    PERSONAS,
+    DEFAULT_PROMPTS,
+    DEFAULT_STANDALONE_PROMPT,
+    type InteractionMode,
+  } from "$lib/data/personas";
   import {
     API_PROVIDERS,
     DEFAULT_MODEL_BY_PROVIDER,
     settings,
     clearKey,
     resetPrompts,
+    resetStandalonePrompt,
     type ApiProviderId,
   } from "$lib/stores/settings.svelte";
   import { testConnection } from "$lib/openrouter";
@@ -17,8 +24,15 @@
     focusApi?: boolean;
     onClose: () => void;
     onExportSession: () => void;
+    onModeChange: (mode: InteractionMode) => void;
   }
-  let { open, focusApi = false, onClose, onExportSession }: Props = $props();
+  let {
+    open,
+    focusApi = false,
+    onClose,
+    onExportSession,
+    onModeChange,
+  }: Props = $props();
 
   let showKey = $state(false);
   let testing = $state(false);
@@ -65,11 +79,46 @@
       <strong style="font-family: var(--serif); font-size: 18px;"
         >Researcher settings</strong
       >
-      <button class="icon-btn" onclick={onClose}
-        ><X /> Close</button
-      >
+      <button class="icon-btn" onclick={onClose}><X /> Close</button>
     </div>
     <div class="drawer-body">
+      <div class="drawer-section">
+        <h3>Interaction mode</h3>
+        <p class="muted text-sans" style="font-size: 13px; margin: 0 0 14px;">
+          Switching mode will reset the current conversation.
+        </p>
+        <div
+          class="mode-toggle"
+          role="radiogroup"
+          aria-label="Interaction mode"
+        >
+          <button
+            type="button"
+            class:active={settings.mode === "personas"}
+            onclick={() => {
+              if (settings.mode !== "personas") onModeChange("personas");
+            }}
+            role="radio"
+            aria-checked={settings.mode === "personas"}
+          >
+            <strong>Three personas</strong>
+            <span>Interviewer, Mentor, Opponent</span>
+          </button>
+          <button
+            type="button"
+            class:active={settings.mode === "standalone"}
+            onclick={() => {
+              if (settings.mode !== "standalone") onModeChange("standalone");
+            }}
+            role="radio"
+            aria-checked={settings.mode === "standalone"}
+          >
+            <strong>Standalone LLM</strong>
+            <span>Single conversational partner</span>
+          </button>
+        </div>
+      </div>
+
       <div class="drawer-section" bind:this={apiSectionEl}>
         <h3>API access</h3>
         <p class="muted text-sans" style="font-size: 13px; margin: 0 0 14px;">
@@ -171,29 +220,62 @@
         {/if}
       </div>
 
-      <div class="drawer-section">
-        <h3>Persona prompts</h3>
-        <p class="muted text-sans" style="font-size: 13px; margin: 0 0 14px;">
-          Edit each persona's behavior independently. Changes apply on the next
-          message.
-        </p>
-        {#each PERSONAS as p (p)}
-          {@const meta = PERSONA_META[p]}
-          <div style="margin-bottom: 16px;">
-            <div class="prompt-label">
-              <strong>
-                <span
-                  style="width: 10px; height: 10px; border-radius: 50%; background: var({meta.var}); display: inline-block;"
-                ></span>
-                {meta.name}
-              </strong>
-              <button
-                class="icon-btn"
-                onclick={() =>
+      {#if settings.mode === "personas"}
+        <div class="drawer-section">
+          <h3>Persona prompts</h3>
+          <p class="muted text-sans" style="font-size: 13px; margin: 0 0 14px;">
+            Edit each persona's behavior independently. Changes apply on the
+            next message.
+          </p>
+          {#each PERSONAS as p (p)}
+            {@const meta = PERSONA_META[p]}
+            <div style="margin-bottom: 16px;">
+              <div class="prompt-label">
+                <strong>
+                  <span
+                    style="width: 10px; height: 10px; border-radius: 50%; background: var({meta.var}); display: inline-block;"
+                  ></span>
+                  {meta.name}
+                </strong>
+                <button
+                  class="icon-btn"
+                  onclick={() =>
+                    (settings.prompts = {
+                      ...settings.prompts,
+                      [p]: DEFAULT_PROMPTS[p],
+                    })}
+                  style="font-size: 12px;"
+                >
+                  <RefreshCw /> Reset
+                </button>
+              </div>
+              <textarea
+                class="prompt-edit"
+                value={settings.prompts[p]}
+                oninput={(e) =>
                   (settings.prompts = {
                     ...settings.prompts,
-                    [p]: DEFAULT_PROMPTS[p],
+                    [p]: e.currentTarget.value,
                   })}
+              ></textarea>
+            </div>
+          {/each}
+          <button class="btn btn-ghost btn-sm" onclick={resetPrompts}>
+            <RefreshCw /> Reset all prompts
+          </button>
+        </div>
+      {:else}
+        <div class="drawer-section">
+          <h3>Standalone prompt</h3>
+          <p class="muted text-sans" style="font-size: 13px; margin: 0 0 14px;">
+            Edit the LLM's system prompt. Changes apply on the next message.
+          </p>
+          <div style="margin-bottom: 16px;">
+            <div class="prompt-label">
+              <strong>System prompt</strong>
+              <button
+                class="icon-btn"
+                onclick={resetStandalonePrompt}
                 style="font-size: 12px;"
               >
                 <RefreshCw /> Reset
@@ -201,19 +283,13 @@
             </div>
             <textarea
               class="prompt-edit"
-              value={settings.prompts[p]}
+              value={settings.standalonePrompt}
               oninput={(e) =>
-                (settings.prompts = {
-                  ...settings.prompts,
-                  [p]: e.currentTarget.value,
-                })}
+                (settings.standalonePrompt = e.currentTarget.value)}
             ></textarea>
           </div>
-        {/each}
-        <button class="btn btn-ghost btn-sm" onclick={resetPrompts}>
-          <RefreshCw /> Reset all prompts
-        </button>
-      </div>
+        </div>
+      {/if}
 
       <div class="drawer-section">
         <h3>Session export</h3>
