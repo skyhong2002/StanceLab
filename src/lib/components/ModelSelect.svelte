@@ -81,7 +81,7 @@
   function enterCustom() {
     customMode = true;
     customDraft = value && !suggestedModels.includes(value) ? value : "";
-    onChange(customDraft);
+    if (customDraft) onChange(customDraft);
     closeMenu();
   }
 
