@@ -13,6 +13,8 @@
     PERSONAS,
     QUESTION_SUGGESTIONS,
     SCRIPTED_TURNS,
+    SCRIPTED_STANDALONE,
+    type InteractionMode,
     type PersonaKind,
     type Turn,
   } from "$lib/data/personas";
@@ -166,6 +168,31 @@
     return messages;
   }
 
+  function buildStandaloneMessages(
+    priorTurns: Turn[],
+    userMsg: string,
+  ): ChatMessage[] {
+    const lines = [`Anchor question: ${question || "(none set yet)"}`];
+    if (opinion)
+      lines.push(
+        `User's starting opinion (confidence ${confidence}%): ${opinion}`,
+      );
+    if (feeling.length)
+      lines.push(`Feelings the user named: ${feeling.join(", ")}`);
+    const systemContent = `${settings.standalonePrompt}\n\n${lines.join("\n")}`;
+    const messages: ChatMessage[] = [
+      { role: "system", content: systemContent },
+    ];
+    for (const t of priorTurns) {
+      messages.push({ role: "user", content: t.user });
+      if (t.standaloneResponse) {
+        messages.push({ role: "assistant", content: t.standaloneResponse });
+      }
+    }
+    messages.push({ role: "user", content: userMsg });
+    return messages;
+  }
+
   function describeError(reason: unknown): string {
     if (reason instanceof OpenRouterError) {
       return reason.status
@@ -222,11 +249,95 @@
     }
   }
 
+  async function streamStandalone(turnIdx: number, userMsg: string) {
+    const priorTurns = turns.slice(0, turnIdx);
+    const messages = buildStandaloneMessages(priorTurns, userMsg);
+    let accumulated = "";
+
+    turns = turns.map((t, i) =>
+      i === turnIdx ? { ...t, standaloneStreaming: true } : t,
+    );
+
+    try {
+      const fullText = await chatStream(messages, {
+        maxTokens: 2000,
+        temperature: 0.8,
+        onChunk: (chunk) => {
+          accumulated += chunk;
+          const visible = streamingVisibleText(accumulated);
+          turns = turns.map((t, i) =>
+            i === turnIdx ? { ...t, standaloneResponse: visible } : t,
+          );
+        },
+      });
+
+      const parsed = parseThinkingResponse(fullText);
+      turns = turns.map((t, i) =>
+        i === turnIdx
+          ? {
+              ...t,
+              standaloneResponse: parsed.response,
+              standaloneThinking: parsed.thinking,
+              standaloneStreaming: false,
+            }
+          : t,
+      );
+    } catch (err) {
+      turns = turns.map((t, i) =>
+        i === turnIdx
+          ? {
+              ...t,
+              standaloneError: describeError(err),
+              standaloneStreaming: false,
+            }
+          : t,
+      );
+    }
+  }
+
   async function send() {
     if (!currentInput.trim()) return;
     const userMsg = currentInput.trim();
     currentInput = "";
     const turnIdx = turns.length;
+    isThinking = true;
+
+    if (settings.mode === "standalone") {
+      const newTurn: Turn = {
+        user: userMsg,
+        responses: null,
+        thinking: {},
+      };
+      turns = [...turns, newTurn];
+
+      if (!settings.apiKey || settings.demoMode) {
+        setTimeout(() => {
+          const scripted =
+            SCRIPTED_STANDALONE[
+              Math.min(turnIdx, SCRIPTED_STANDALONE.length - 1)
+            ];
+          turns = turns.map((t, i) =>
+            i === turnIdx
+              ? {
+                  ...t,
+                  standaloneResponse: scripted.response,
+                  standaloneThinking: scripted.thinking,
+                }
+              : t,
+          );
+          isThinking = false;
+        }, 1400);
+        return;
+      }
+
+      try {
+        await streamStandalone(turnIdx, userMsg);
+      } finally {
+        isThinking = false;
+      }
+      return;
+    }
+
     const newTurn: Turn = {
       user: userMsg,
       responses: null,
@@ -235,7 +346,6 @@
       streaming: [...PERSONAS],
     };
     turns = [...turns, newTurn];
-    isThinking = true;
 
     if (!settings.apiKey || settings.demoMode) {
       setTimeout(() => {
@@ -325,9 +435,50 @@
     }
   }
 
-  function useAsFollowUp(persona: PersonaKind, body: string) {
+  async function retryStandalone(idx: number) {
+    const t = turns[idx];
+    if (!t) return;
+    turns = turns.map((tt, i) => {
+      if (i !== idx) return tt;
+      return {
+        ...tt,
+        standaloneResponse: undefined,
+        standaloneThinking: undefined,
+        standaloneError: undefined,
+        standaloneStreaming: true,
+      };
+    });
+    isThinking = true;
+    if (!settings.apiKey || settings.demoMode) {
+      setTimeout(() => {
+        const scripted =
+          SCRIPTED_STANDALONE[Math.min(idx, SCRIPTED_STANDALONE.length - 1)];
+        turns = turns.map((tt, i) =>
+          i === idx
+            ? {
+                ...tt,
+                standaloneResponse: scripted.response,
+                standaloneThinking: scripted.thinking,
+                standaloneStreaming: false,
+              }
+            : tt,
+        );
+        isThinking = false;
+      }, 800);
+      return;
+    }
+    try {
+      await streamStandalone(idx, t.user);
+    } finally {
+      isThinking = false;
+    }
+  }
+
+  function useAsFollowUp(persona: PersonaKind | null, body: string) {
     void body;
-    const seed = `接續${PERSONA_META[persona].name}的觀點：`;
+    const seed = persona
+      ? `接續${PERSONA_META[persona].name}的觀點：`
+      : "接續對話：";
     currentInput = seed;
     setTimeout(() => {
       if (composerEl) {
@@ -337,15 +488,15 @@
     }, 50);
   }
 
-  function quoteToNotepad(persona: PersonaKind, text: string) {
+  function quoteToNotepad(persona: PersonaKind | null, text: string) {
     if (!text) return;
-    const meta = PERSONA_META[persona];
+    const label = persona ? PERSONA_META[persona].name : "LLM 回答";
     const lead = notepad && !notepad.endsWith("\n\n") ? "\n\n" : "";
     const quoted = text
       .split("\n")
       .map((l) => `> ${l}`)
       .join("\n");
-    notepad = `${notepad}${lead}— ${meta.name} said:\n${quoted}\n\n`;
+    notepad = `${notepad}${lead}— ${label} said:\n${quoted}\n\n`;
   }
 
   function exportText() {
@@ -360,6 +511,7 @@
 
   function exportSession() {
     const data = {
+      mode: settings.mode,
       opinion,
       question,
       confidence,
@@ -369,8 +521,12 @@
         user: t.user,
         responses: t.responses,
         thinking: t.thinking,
+        standaloneResponse: t.standaloneResponse,
+        standaloneThinking: t.standaloneThinking,
       })),
-      prompts: settings.prompts,
+      prompts: settings.mode === "personas" ? settings.prompts : undefined,
+      standalonePrompt:
+        settings.mode === "standalone" ? settings.standalonePrompt : undefined,
       apiProvider: settings.apiProvider,
       model: settings.model,
       notepad,
@@ -406,6 +562,23 @@
   function openSettings(focus = false) {
     settingsFocusApi = focus;
     settingsOpen = true;
+  }
+
+  function handleModeChange(mode: InteractionMode) {
+    settings.mode = mode;
+    step = "start";
+    opinion = "";
+    question = "";
+    questionGenerating = false;
+    confidence = 50;
+    feeling = [];
+    turns = [];
+    notepad = "";
+    postConfidence = null;
+    isThinking = false;
+    fullscreen = null;
+    expandedPersona = null;
+    currentInput = "";
   }
 
   const keyStatus = $derived(
@@ -472,6 +645,7 @@
     bind:this={workspaceEl}
   >
     <ConversationPane
+      mode={settings.mode}
       {question}
       onQuestion={(v) => (question = v)}
       {turns}
@@ -482,6 +656,7 @@
       onUseAsFollowUp={useAsFollowUp}
       onQuoteToNotepad={quoteToNotepad}
       onRetry={retryPersona}
+      onRetryStandalone={retryStandalone}
       {expandedPersona}
       onExpandPersona={(v) => (expandedPersona = v)}
       isFullscreen={fullscreen === "convo"}
@@ -523,7 +698,7 @@
   />
 {/if}
 
-{#if step === "workspace" && expandedPersona && turns[expandedPersona.t]?.responses}
+{#if settings.mode === "personas" && step === "workspace" && expandedPersona && turns[expandedPersona.t]?.responses}
   <PersonaModal
     turn={turns[expandedPersona.t]}
     persona={expandedPersona.p}
@@ -538,6 +713,7 @@
   focusApi={settingsFocusApi}
   onClose={() => (settingsOpen = false)}
   onExportSession={exportSession}
+  onModeChange={handleModeChange}
 />
 
 {#if apiModalOpen}
