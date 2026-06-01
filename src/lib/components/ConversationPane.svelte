@@ -12,7 +12,6 @@
     onCurrentInput: (v: string) => void;
     onSend: () => void;
     isThinking: boolean;
-    onChooseHelpful: (idx: number, p: PersonaKind) => void;
     onUseAsFollowUp: (p: PersonaKind, body: string) => void;
     onQuoteToNotepad: (p: PersonaKind, body: string) => void;
     onRetry: (idx: number, p: PersonaKind) => void;
@@ -31,7 +30,6 @@
     onCurrentInput,
     onSend,
     isThinking,
-    onChooseHelpful,
     onUseAsFollowUp,
     onQuoteToNotepad,
     onRetry,
@@ -132,15 +130,13 @@
             {@const loading = !turn.responses && !err}
             {@const streaming =
               !loading && !err && !!turn.streaming?.includes(p)}
-            <PersonaCard
+<PersonaCard
               kind={p}
               {body}
               {thinking}
               isLoading={loading}
               isStreaming={streaming}
               error={err}
-              isSelected={turn.helpful === p}
-              onSelect={() => onChooseHelpful(idx, p)}
               onUseAsFollowUp={() => onUseAsFollowUp(p, body ?? "")}
               onSendToNotepad={() => onQuoteToNotepad(p, body ?? "")}
               onExpand={() =>
@@ -150,7 +146,8 @@
                     expandedPersona.p === p
                     ? null
                     : { t: idx, p },
-                )}
+                )
+              }
               collapsed={isCollapsed(idx, p)}
               onToggleCollapse={() => toggleCollapse(idx, p)}
               isExpanded={false}
