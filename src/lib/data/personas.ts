@@ -1,4 +1,5 @@
 export type PersonaKind = "interviewer" | "mentor" | "opponent";
+export type InteractionMode = "personas" | "standalone";
 
 export interface ScriptedContent {
   thinking: string;
@@ -13,6 +14,10 @@ export interface Turn {
   thinking: Partial<Record<PersonaKind, string>> | null;
   errors?: Partial<Record<PersonaKind, string>>;
   streaming?: PersonaKind[];
+  standaloneResponse?: string;
+  standaloneThinking?: string;
+  standaloneError?: string;
+  standaloneStreaming?: boolean;
 }
 
 export const PERSONAS: readonly PersonaKind[] = [
@@ -192,6 +197,49 @@ export const SCRIPTED_TURNS: ScriptedTurn[] = [
       response:
         "寫一個版本，是反對你的人會截圖嘲笑的。再寫一個，是他們會引用來說『這我同意』的。你真正的訊息在這兩者之間——而且更靠近第二個。",
     },
+  },
+];
+
+export const DEFAULT_STANDALONE_PROMPT = `你是一位對話夥伴，正在和一個人進行簡訊對話，幫助他們反思自己的立場。
+
+思考階段：深入分析對方的論點、假設和內在張力。考慮什麼樣的回應最能幫助他們推進思考。把你的分析寫在 <thinking> 標籤內。
+
+回應階段：根據你的思考，寫一則**簡短、自然**的訊息（最多 2-3 句話，約 60 字以內）。要像真的人在傳簡訊一樣——口語、直白、不說教。可以提問、提供洞見或提出挑戰，但每次只做一件事。
+
+你**必須**使用以下格式：
+<thinking>
+[你對他們論點的深入分析]
+</thinking>
+<response>
+[你簡短、自然的訊息]
+</response>
+
+重要：<response> 必須簡短且像對話。不要寫成文章。請全程以繁體中文回應。`;
+
+export const SCRIPTED_STANDALONE: ScriptedContent[] = [
+  {
+    thinking:
+      "使用者有明確的立場但承認不確定性。最有生產力的角度是探索這份不確定性的來源——是因為資訊不足，還是因為內心有衝突？",
+    response:
+      "你說你不確定——是因為覺得資訊不夠，還是因為心裡有兩個聲音在拉扯？這兩種不確定需要完全不同的方式來面對。",
+  },
+  {
+    thinking:
+      "他們一直在用「公平」這個詞，但沒有具體說明誰受益、誰承擔成本。追問具體的受益者可以幫助他們從抽象走向具體。",
+    response:
+      "你提了「公平」幾次。當你想像受這件事影響最深的人，腦海裡浮現的是誰？不是抽象的那種——是具體的某一群人。",
+  },
+  {
+    thinking:
+      "他們似乎把現狀當成中性的基準線。我應該挑戰這個假設——不行動本身也是一種選擇，也有它的代價。",
+    response:
+      "誠實問一下——你是拿這個方案和一個理想比，還是和現在的現狀比？現狀也不是免費的，只是我們習慣了它的代價。",
+  },
+  {
+    thinking:
+      "接近尾聲了。我應該幫他們注意到自己的思考方式是否改變了——不只是結論，還有他們如何表達和看待這個議題。",
+    response:
+      "我們聊了好幾輪。在寫下你的想法之前，問一個安靜的：有什麼改變了嗎？不一定是你的結論——而是你表達它的方式。",
   },
 ];
 
