@@ -116,6 +116,14 @@ export interface ModelOption {
 export const MODEL_OPTIONS: ModelOption[] = [
   {
     apiProvider: "openrouter",
+    id: "anthropic/claude-opus-4.8",
+    name: "Claude Opus 4.8",
+    provider: "anthropic",
+    blurb: "最強的推理。",
+    tier: "flagship",
+  },
+  {
+    apiProvider: "openrouter",
     id: "anthropic/claude-sonnet-4.6",
     name: "Claude Sonnet 4.6",
     provider: "anthropic",
