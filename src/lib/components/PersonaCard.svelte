@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MessageCircleQuestion, BookOpen, Swords, Copy, X, Maximize2, ChevronUp, ChevronDown, BookPlus, Reply, RefreshCw } from "@lucide/svelte";
+  import { MessageCircleQuestion, BookOpen, Swords, Copy, X, Maximize2, ChevronUp, ChevronDown, FilePlus, Reply, RefreshCw } from "@lucide/svelte";
   import { PERSONA_META, type PersonaKind } from "$lib/data/personas";
   import { renderMarkdown } from "$lib/markdown";
 
@@ -120,20 +120,20 @@
       <div class="persona-foot">
         <button
           class="notebook-btn"
+          title="Add to notebook"
           onclick={onSendToNotepad}
         >
-          <BookPlus />
-          Add to notebook
+          <FilePlus />
         </button>
-        <button class="persona-followup" onclick={onUseAsFollowUp}>
-          <Reply /> Reply
+        <button class="persona-followup" title="Reply" onclick={onUseAsFollowUp}>
+          <Reply />
         </button>
       </div>
     {/if}
     {#if !isLoading && error}
       <div class="persona-foot">
-        <button class="persona-followup" onclick={onRetry}>
-          <RefreshCw /> Retry
+        <button class="persona-followup" title="Retry" onclick={onRetry}>
+          <RefreshCw />
         </button>
       </div>
     {/if}

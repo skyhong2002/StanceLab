@@ -7,10 +7,12 @@
     question: string;
     questionGenerating: boolean;
     confidence: number;
+    postingDestination: string;
     feeling: string[];
     onOpinion: (v: string) => void;
     onQuestion: (v: string) => void;
     onConfidence: (v: number) => void;
+    onPostingDestination: (v: string) => void;
     onFeeling: (v: string[]) => void;
     onGenerateQuestion: () => void;
     onBegin: () => void;
@@ -21,10 +23,12 @@
     question,
     questionGenerating,
     confidence,
+    postingDestination,
     feeling,
     onOpinion,
     onQuestion,
     onConfidence,
+    onPostingDestination,
     onFeeling,
     onGenerateQuestion,
     onBegin,
@@ -55,6 +59,23 @@
 
   <div style="margin-bottom: 28px;">
     <div class="field-head">
+      <h2>你打算發到哪裡？</h2>
+      <span class="muted text-sans" style="font-size: 12px;">選填</span>
+    </div>
+    <p class="muted text-sans" style="font-size: 13px; margin: 0 0 12px;">
+      你計畫把這篇內容發到哪個平台？
+    </p>
+    <input
+      type="text"
+      class="field"
+      placeholder="例如：你的部落格、朋友們的 Facebook Group、或你的 Discord 伺服器"
+      value={postingDestination}
+      oninput={(e) => onPostingDestination(e.currentTarget.value)}
+    />
+  </div>
+
+  <div style="margin-bottom: 28px;">
+    <div class="field-head">
       <h2>你的意見</h2>
       <span class="muted text-sans" style="font-size: 12px;">必填</span>
     </div>
@@ -77,9 +98,35 @@
     </div>
   </div>
 
+  <div style="margin-bottom: 24px;">
+    <div class="field-head">
+      <h2>對於這個意見你感到多肯定？</h2>
+      <span class="muted text-sans" style="font-size: 12px;">
+        我們會在最後再確認一次
+      </span>
+    </div>
+    <input
+      type="range"
+      min="0"
+      max="100"
+      step="1"
+      value={confidence}
+      oninput={(e) => onConfidence(Number(e.currentTarget.value))}
+      class="stance-slider"
+      style="margin-top: 14px;"
+    />
+    <div class="stance-labels">
+      <span>非常不確定</span>
+      <span style="color: var(--ink); font-weight: 500;"
+        >{confidence}% 確定</span
+      >
+      <span>相當確定</span>
+    </div>
+  </div>
+
   <div style="margin-bottom: 28px;">
     <div class="field-head">
-      <h2>你正在糾結的問題</h2>
+      <h2>你想討論的問題是什麼？</h2>
       <span class="muted text-sans" style="font-size: 12px;">
         選填 · 若你略過，我們會幫你建議一個
       </span>
@@ -117,32 +164,6 @@
       {questionSet
         ? "這會放在對話上方，作為你的定錨。"
         : "想留白嗎？沒問題——你開始時我們會幫你產生一個。"}
-    </div>
-  </div>
-
-  <div style="margin-bottom: 24px;">
-    <div class="field-head">
-      <h2>這個想法有多堅定？</h2>
-      <span class="muted text-sans" style="font-size: 12px;">
-        我們會在最後悄悄再確認一次
-      </span>
-    </div>
-    <input
-      type="range"
-      min="0"
-      max="100"
-      step="1"
-      value={confidence}
-      oninput={(e) => onConfidence(Number(e.currentTarget.value))}
-      class="stance-slider"
-      style="margin-top: 14px;"
-    />
-    <div class="stance-labels">
-      <span>非常不確定</span>
-      <span style="color: var(--ink); font-weight: 500;"
-        >{confidence}% 確定</span
-      >
-      <span>相當確定</span>
     </div>
   </div>
 

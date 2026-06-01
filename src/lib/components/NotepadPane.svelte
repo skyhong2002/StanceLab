@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Pencil, Maximize2, Minimize2, ShieldCheck, Check } from "@lucide/svelte";
+  import { Pencil, Maximize2, Minimize2, Check } from "@lucide/svelte";
 
   interface Props {
     notepad: string;
@@ -7,6 +7,7 @@
     isFullscreen: boolean;
     onToggleFullscreen: () => void;
     onComplete: () => void;
+    postingDestination?: string;
   }
 
   let {
@@ -15,6 +16,7 @@
     isFullscreen,
     onToggleFullscreen,
     onComplete,
+    postingDestination = "",
   }: Props = $props();
   const ready = $derived(notepad.trim().length > 0);
 </script>
@@ -24,8 +26,8 @@
     <div class="pane-title">
       <span class="pane-title-icon"><Pencil /></span>
       <div>
-        <div class="pane-title-main">你的記事本</div>
-        <div class="pane-title-sub">一個安靜地寫下你要分享內容的地方</div>
+        <div class="pane-title-main">文章草稿</div>
+        <div class="pane-title-sub">{postingDestination ? `預計發到 ${postingDestination} 的文章` : "預計對外發出的草稿"}</div>
       </div>
     </div>
     <div class="pane-actions">
@@ -49,9 +51,6 @@
   </div>
 
   <footer class="notepad-foot">
-    <span class="muted text-sans" style="font-size: 12px;">
-      <ShieldCheck class="inline-icon" /> 沒有任何內容會自行離開
-    </span>
     <button
       class="btn btn-primary btn-sm"
       onclick={onComplete}
