@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import { Check, Copy, Download, ArrowLeft, RefreshCw } from "@lucide/svelte";
 
   interface Props {
     notepad: string;
@@ -65,16 +65,16 @@
   <div class="row" style="gap: 10px; margin-bottom: 32px;">
     <button class="btn btn-ghost btn-sm" onclick={handleCopy}>
       {#if copied}
-        <Icon name="check" /> 已複製
+        <Check /> 已複製
       {:else}
-        <Icon name="copy" /> 複製
+        <Copy /> 複製
       {/if}
     </button>
     <button class="btn btn-ghost btn-sm" onclick={onExport}>
-      <Icon name="download" /> 儲存為文字檔
+      <Download /> 儲存為文字檔
     </button>
     <button class="btn btn-ghost btn-sm" onclick={onExportSession}>
-      <Icon name="download" /> 匯出對話 JSON
+      <Download /> 匯出對話 JSON
     </button>
   </div>
 
@@ -113,10 +113,10 @@
 
   <div class="row-between" style="margin-top: 16px;">
     <button class="btn btn-ghost" onclick={onBack}>
-      <Icon name="arrowLeft" class="btn-arrow" /> 回到我的記事本
+      <ArrowLeft class="btn-arrow" /> 回到我的記事本
     </button>
     <button class="btn btn-primary" onclick={onRestart}>
-      <Icon name="refresh" /> 開始新的對話
+      <RefreshCw /> 開始新的對話
     </button>
   </div>
 </div>

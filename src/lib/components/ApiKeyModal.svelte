@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import { Key, X, ShieldCheck, ArrowRight } from "@lucide/svelte";
   import ModelSelect from "./ModelSelect.svelte";
   import {
     API_PROVIDERS,
@@ -67,7 +67,7 @@
   >
     <header class="api-modal-head">
       <div class="api-modal-title">
-        <span class="api-modal-icon"><Icon name="key" /></span>
+        <span class="api-modal-icon"><Key /></span>
         <div>
           <div class="pane-title-main">Add an API key</div>
           <div class="pane-title-sub">
@@ -77,7 +77,7 @@
         </div>
       </div>
       <button class="icon-btn" onclick={onClose} title="Close"
-        ><Icon name="close" /></button
+        ><X /></button
       >
     </header>
 
@@ -163,7 +163,7 @@
       {/if}
 
       <div class="safety" style="margin-top: 22px;">
-        <Icon name="shield" />
+        <ShieldCheck />
         <div>
           {#if providerDraft === "openrouter"}
             <strong>Your key stays in this browser.</strong> We never send it anywhere
@@ -181,7 +181,7 @@
         Use demo mode (scripted responses)
       </button>
       <button class="btn btn-primary btn-sm" onclick={save}>
-        Save & continue <Icon name="arrow" class="btn-arrow" />
+        Save & continue <ArrowRight class="btn-arrow" />
       </button>
     </footer>
   </div>

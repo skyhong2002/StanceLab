@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import { Sparkles, ArrowRight } from "@lucide/svelte";
   import { FEELINGS } from "$lib/data/personas";
 
   interface Props {
@@ -108,7 +108,7 @@
           >
           Suggesting
         {:else}
-          <Icon name="spark" />
+          <Sparkles />
           {questionSet ? "重寫" : "幫我建議一個"}
         {/if}
       </button>
@@ -156,7 +156,7 @@
       onclick={onBegin}
       title={ready ? "" : "請先寫下你的意見"}
     >
-      開始反思 <Icon name="arrow" class="btn-arrow" />
+      開始反思 <ArrowRight class="btn-arrow" />
     </button>
   </div>
 </div>

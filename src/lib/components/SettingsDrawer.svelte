@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import { X, RefreshCw, Download } from "@lucide/svelte";
   import ModelSelect from "./ModelSelect.svelte";
   import { PERSONA_META, PERSONAS, DEFAULT_PROMPTS } from "$lib/data/personas";
   import {
@@ -66,7 +66,7 @@
         >Researcher settings</strong
       >
       <button class="icon-btn" onclick={onClose}
-        ><Icon name="close" /> Close</button
+        ><X /> Close</button
       >
     </div>
     <div class="drawer-body">
@@ -196,7 +196,7 @@
                   })}
                 style="font-size: 12px;"
               >
-                <Icon name="refresh" /> Reset
+                <RefreshCw /> Reset
               </button>
             </div>
             <textarea
@@ -211,14 +211,14 @@
           </div>
         {/each}
         <button class="btn btn-ghost btn-sm" onclick={resetPrompts}>
-          <Icon name="refresh" /> Reset all prompts
+          <RefreshCw /> Reset all prompts
         </button>
       </div>
 
       <div class="drawer-section">
         <h3>Session export</h3>
         <button class="btn btn-ghost" onclick={onExportSession}>
-          <Icon name="download" /> Download session JSON
+          <Download /> Download session JSON
         </button>
         <p class="muted text-sans" style="font-size: 12px; margin-top: 8px;">
           Includes opinion, question, turns, notepad — never the API key.

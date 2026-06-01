@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import { Pencil, Maximize2, Minimize2, ShieldCheck, Check } from "@lucide/svelte";
 
   interface Props {
     notepad: string;
@@ -22,7 +22,7 @@
 <section class={["pane", "pane-notepad", { fullscreen: isFullscreen }]}>
   <header class="pane-head">
     <div class="pane-title">
-      <span class="pane-title-icon"><Icon name="edit" /></span>
+      <span class="pane-title-icon"><Pencil /></span>
       <div>
         <div class="pane-title-main">你的記事本</div>
         <div class="pane-title-sub">一個安靜地寫下你要分享內容的地方</div>
@@ -34,9 +34,7 @@
         onclick={onToggleFullscreen}
         title={isFullscreen ? "恢復分割檢視" : "將此面板全螢幕"}
       >
-        {#if isFullscreen}<Icon name="collapse" />{:else}<Icon
-            name="expand"
-          />{/if}
+        {#if isFullscreen}<Minimize2 />{:else}<Maximize2 />{/if}
       </button>
     </div>
   </header>
@@ -52,7 +50,7 @@
 
   <footer class="notepad-foot">
     <span class="muted text-sans" style="font-size: 12px;">
-      <Icon name="shield" class="inline-icon" /> 沒有任何內容會自行離開
+      <ShieldCheck class="inline-icon" /> 沒有任何內容會自行離開
     </span>
     <button
       class="btn btn-primary btn-sm"
@@ -60,7 +58,7 @@
       disabled={!ready}
       title={ready ? "標記為完成並繼續" : "請先寫點東西"}
     >
-      <Icon name="check" /> 完成
+      <Check /> 完成
     </button>
   </footer>
 </section>
