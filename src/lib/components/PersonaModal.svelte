@@ -1,11 +1,26 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import {
+    MessageCircleQuestionMark,
+    BookOpen,
+    Swords,
+    X,
+    ChevronUp,
+    ChevronDown,
+    Copy,
+    Reply,
+  } from "@lucide/svelte";
   import {
     PERSONA_META,
     type PersonaKind,
     type Turn,
   } from "$lib/data/personas";
   import { renderMarkdown } from "$lib/markdown";
+
+  const glyphIcons = {
+    interviewer: MessageCircleQuestionMark,
+    mentor: BookOpen,
+    opponent: Swords,
+  } as const;
 
   interface Props {
     turn: Turn;
@@ -19,6 +34,7 @@
     $props();
 
   const meta = $derived(PERSONA_META[persona]);
+  const GlyphIcon = $derived(glyphIcons[meta.glyph]);
   const body = $derived(turn.responses?.[persona] ?? "");
   const thinking = $derived(turn.thinking?.[persona] ?? "");
   let showThinking = $state(false);
@@ -42,13 +58,10 @@
   >
     <header class="modal-head">
       <div class="persona-name">
-        <span class="persona-glyph"><Icon name={meta.glyph} /></span>
+        <span class="persona-glyph"><GlyphIcon /></span>
         {meta.name}
-        <span class="persona-tag">{meta.tagline}</span>
       </div>
-      <button class="icon-btn" onclick={onClose}
-        ><Icon name="close" /> 關閉</button
-      >
+      <button class="icon-btn" onclick={onClose}><X /> 關閉</button>
     </header>
     <div class="modal-body">
       <div class="modal-context">回覆：</div>
@@ -62,7 +75,7 @@
             class="thinking-toggle"
             onclick={() => (showThinking = !showThinking)}
           >
-            <Icon name={showThinking ? "chevronUp" : "chevronDown"} />
+            {#if showThinking}<ChevronUp />{:else}<ChevronDown />{/if}
             {showThinking ? "隱藏思考過程" : "查看思考過程"}
           </button>
           {#if showThinking}
@@ -81,7 +94,7 @@
           onClose();
         }}
       >
-        <Icon name="copy" /> 引用到記事本
+        <Copy /> 引用到記事本
       </button>
       <button
         class="btn btn-primary btn-sm"
@@ -90,7 +103,7 @@
           onClose();
         }}
       >
-        <Icon name="reply" /> 回覆這則
+        <Reply /> 回覆這則
       </button>
     </footer>
   </div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import { Pencil } from "@lucide/svelte";
 
   interface Props {
     question: string;
@@ -75,7 +75,7 @@
       }}
       title="編輯問題"
     >
-      <Icon name="edit" />
+      <Pencil />
     </button>
   {/if}
 </div>

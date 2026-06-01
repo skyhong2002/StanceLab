@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import { MessageSquare, Maximize2, Minimize2, Sparkles, ArrowRight } from "@lucide/svelte";
   import PersonaCard from "./PersonaCard.svelte";
   import QuestionBanner from "./QuestionBanner.svelte";
   import { PERSONAS, type PersonaKind, type Turn } from "$lib/data/personas";
@@ -89,7 +89,7 @@
 <section class={["pane", "pane-convo", { fullscreen: isFullscreen }]}>
   <header class="pane-head">
     <div class="pane-title">
-      <span class="pane-title-icon"><Icon name="message" /></span>
+      <span class="pane-title-icon"><MessageSquare /></span>
       <div>
         <div class="pane-title-main">三種聲音</div>
         <div class="pane-title-sub">
@@ -103,9 +103,7 @@
         onclick={onToggleFullscreen}
         title={isFullscreen ? "恢復分割檢視" : "將此面板全螢幕"}
       >
-        {#if isFullscreen}<Icon name="collapse" />{:else}<Icon
-            name="expand"
-          />{/if}
+        {#if isFullscreen}<Minimize2 />{:else}<Maximize2 />{/if}
       </button>
     </div>
   </header>
@@ -115,7 +113,7 @@
   <div class="pane-body" bind:this={bodyEl}>
     {#if turns.length === 0 && !isThinking}
       <div class="empty-convo">
-        <div class="empty-convo-mark"><Icon name="spark" /></div>
+        <div class="empty-convo-mark"><Sparkles /></div>
         <h3>準備好了就開始。</h3>
         <p>
           你的意見已經在下方的輸入框裡了。修改它，或直接送出——三種聲音會同時回應。
@@ -180,7 +178,7 @@
       ></textarea>
       <div class="composer-row">
         <span class="composer-hint">
-          <Icon name="message" />
+<MessageSquare />
           <span class="kbd">⌘</span> <span class="kbd">↵</span> · 三者皆回應
         </span>
         <button
@@ -189,7 +187,7 @@
           onclick={onSend}
         >
           {isThinking ? "思考中…" : "送出"}
-          {#if !isThinking}<Icon name="arrow" class="btn-arrow" />{/if}
+          {#if !isThinking}<ArrowRight class="btn-arrow" />{/if}
         </button>
       </div>
     </div>

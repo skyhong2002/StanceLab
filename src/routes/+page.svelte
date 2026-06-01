@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Icon from "$lib/components/Icon.svelte";
+  import { Key, RefreshCw, Settings } from "@lucide/svelte";
   import StartScreen from "$lib/components/StartScreen.svelte";
   import ConversationPane from "$lib/components/ConversationPane.svelte";
   import NotepadPane from "$lib/components/NotepadPane.svelte";
@@ -431,16 +431,16 @@
           ? "Demo mode (no key)"
           : "Add your API key"}
     >
-      <Icon name="key" />
+      <Key />
       <span class="status-dot"></span>
     </button>
     {#if step === "workspace" || step === "complete"}
       <button class="icon-btn" onclick={restart} title="Start a new session">
-        <Icon name="refresh" />
+        <RefreshCw />
       </button>
     {/if}
     <button class="icon-btn" onclick={() => openSettings(false)}>
-      <Icon name="settings" /> Researcher
+      <Settings /> Researcher
     </button>
   </div>
 </header>

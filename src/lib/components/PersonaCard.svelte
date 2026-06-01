@@ -1,7 +1,9 @@
 <script lang="ts">
-  import Icon from "./Icon.svelte";
+  import { MessageCircleQuestion, BookOpen, Swords, Copy, X, Maximize2, ChevronUp, ChevronDown, ThumbsUp, Reply, RefreshCw } from "@lucide/svelte";
   import { PERSONA_META, type PersonaKind } from "$lib/data/personas";
   import { renderMarkdown } from "$lib/markdown";
+
+  const glyphIcons = { interviewer: MessageCircleQuestion, mentor: BookOpen, opponent: Swords } as const;
 
   interface Props {
     kind: PersonaKind;
@@ -40,6 +42,7 @@
   }: Props = $props();
 
   const meta = $derived(PERSONA_META[kind]);
+  const GlyphIcon = $derived(glyphIcons[meta.glyph]);
   let showThinking = $state(false);
 </script>
 
@@ -52,7 +55,7 @@
       onclick={onToggleCollapse}
       title={collapsed ? "Expand" : "Collapse"}
     >
-      <span class="persona-glyph"><Icon name={meta.glyph} /></span>
+      <span class="persona-glyph"><GlyphIcon /></span>
       {meta.name}
     </button>
     <div class="persona-head-actions">
@@ -62,7 +65,7 @@
           onclick={onSendToNotepad}
           title="Send to notepad"
         >
-          <Icon name="copy" />
+          <Copy />
         </button>
       {/if}
       <button
@@ -71,9 +74,9 @@
         title={isExpanded ? "Collapse" : "Open fullscreen"}
       >
         {#if isExpanded}
-          <Icon name="close" />
+          <X />
         {:else}
-          <Icon name="expand" />
+          <Maximize2 />
         {/if}
       </button>
     </div>
@@ -103,7 +106,7 @@
               class="thinking-toggle"
               onclick={() => (showThinking = !showThinking)}
             >
-              <Icon name={showThinking ? "chevronUp" : "chevronDown"} />
+              {#if showThinking}<ChevronUp />{:else}<ChevronDown />{/if}
               {showThinking ? "隱藏思考過程" : "查看思考過程"}
             </button>
             {#if showThinking}
@@ -124,18 +127,18 @@
           onclick={onSelect}
           aria-pressed={isSelected}
         >
-          <Icon name="thumbsUp" />
+          <ThumbsUp />
           {isSelected ? "Most helpful" : "Mark helpful"}
         </button>
         <button class="persona-followup" onclick={onUseAsFollowUp}>
-          <Icon name="reply" /> Reply
+          <Reply /> Reply
         </button>
       </div>
     {/if}
     {#if !isLoading && error}
       <div class="persona-foot">
         <button class="persona-followup" onclick={onRetry}>
-          <Icon name="refresh" /> Retry
+          <RefreshCw /> Retry
         </button>
       </div>
     {/if}

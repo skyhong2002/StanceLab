@@ -1,6 +1,6 @@
 <script lang="ts">
   import { untrack } from "svelte";
-  import Icon from "./Icon.svelte";
+  import { Check } from "@lucide/svelte";
   import {
     DEFAULT_MODEL_BY_PROVIDER,
     PROVIDER_LABEL,
@@ -261,7 +261,7 @@
                   <span class="model-option-id">{m.id}</span>
                 </span>
                 {#if value === m.id}
-                  <span class="model-option-check"><Icon name="check" /></span>
+                  <span class="model-option-check"><Check /></span>
                 {/if}
               </button>
             </li>
