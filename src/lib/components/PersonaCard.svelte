@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MessageCircleQuestion, BookOpen, Swords, Copy, X, Maximize2, ChevronUp, ChevronDown, ThumbsUp, Reply, RefreshCw } from "@lucide/svelte";
+  import { MessageCircleQuestion, BookOpen, Swords, Copy, X, Maximize2, ChevronUp, ChevronDown, BookPlus, Reply, RefreshCw } from "@lucide/svelte";
   import { PERSONA_META, type PersonaKind } from "$lib/data/personas";
   import { renderMarkdown } from "$lib/markdown";
 
@@ -12,10 +12,8 @@
     isLoading: boolean;
     isStreaming: boolean;
     error?: string;
-    isSelected: boolean;
     collapsed: boolean;
     isExpanded: boolean;
-    onSelect: () => void;
     onUseAsFollowUp: () => void;
     onSendToNotepad: () => void;
     onExpand: () => void;
@@ -30,10 +28,8 @@
     isLoading,
     isStreaming,
     error,
-    isSelected,
     collapsed,
     isExpanded,
-    onSelect,
     onUseAsFollowUp,
     onSendToNotepad,
     onExpand,
@@ -47,7 +43,7 @@
 </script>
 
 <div
-  class={["persona-card", kind, { selected: isSelected, expanded: isExpanded }]}
+  class={["persona-card", kind, { expanded: isExpanded }]}
 >
   <div class="persona-head">
     <button
@@ -123,12 +119,11 @@
     {#if !isLoading && !error && !isStreaming}
       <div class="persona-foot">
         <button
-          class={["helpful-btn", { active: isSelected }]}
-          onclick={onSelect}
-          aria-pressed={isSelected}
+          class="notebook-btn"
+          onclick={onSendToNotepad}
         >
-          <ThumbsUp />
-          {isSelected ? "Most helpful" : "Mark helpful"}
+          <BookPlus />
+          Add to notebook
         </button>
         <button class="persona-followup" onclick={onUseAsFollowUp}>
           <Reply /> Reply

@@ -146,8 +146,18 @@
     const messages: ChatMessage[] = [
       { role: "system", content: buildSystemPrompt(kind) },
     ];
+    const otherKinds = PERSONAS.filter((k) => k !== kind);
     for (const t of priorTurns) {
-      messages.push({ role: "user", content: t.user });
+      let userContent = t.user;
+      if (t.responses) {
+        const otherResponses = otherKinds
+          .filter((k) => t.responses?.[k])
+          .map((k) => `- ${PERSONA_META[k].name}：${t.responses![k]}`);
+        if (otherResponses.length > 0) {
+          userContent += `\n\n其他觀點的回應：\n${otherResponses.join("\n")}`;
+        }
+      }
+      messages.push({ role: "user", content: userContent });
       if (t.responses?.[kind]) {
         messages.push({ role: "assistant", content: t.responses[kind] });
       }
@@ -221,7 +231,6 @@
       user: userMsg,
       responses: null,
       thinking: {},
-      helpful: null,
       errors: {},
       streaming: [...PERSONAS],
     };
@@ -316,12 +325,6 @@
     }
   }
 
-  function chooseHelpful(idx: number, p: PersonaKind) {
-    turns = turns.map((t, i) =>
-      i === idx ? { ...t, helpful: t.helpful === p ? null : p } : t,
-    );
-  }
-
   function useAsFollowUp(persona: PersonaKind, body: string) {
     void body;
     const seed = `接續${PERSONA_META[persona].name}的觀點：`;
@@ -366,7 +369,6 @@
         user: t.user,
         responses: t.responses,
         thinking: t.thinking,
-        helpful: t.helpful,
       })),
       prompts: settings.prompts,
       apiProvider: settings.apiProvider,
@@ -477,7 +479,6 @@
       onCurrentInput={(v) => (currentInput = v)}
       onSend={send}
       {isThinking}
-      onChooseHelpful={chooseHelpful}
       onUseAsFollowUp={useAsFollowUp}
       onQuoteToNotepad={quoteToNotepad}
       onRetry={retryPersona}

@@ -790,15 +790,11 @@ input.field::placeholder {
   padding-top: 12px;
   border-top: 1px dashed var(--rule);
 }
-.persona-helpful {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.helpful-btn {
+.notebook-btn {
   background: transparent;
-  border: 1px solid var(--rule);
-  color: var(--ink-3);
+  border: 1px solid var(--accent-rule);
+  color: var(--accent-deep);
+  background: var(--accent-tint);
   border-radius: 100px;
   padding: 5px 10px;
   font-family: var(--sans);
@@ -807,18 +803,14 @@ input.field::placeholder {
   align-items: center;
   gap: 5px;
   transition: all 0.15s;
+  font-weight: 500;
 }
-.helpful-btn:hover {
-  border-color: var(--accent-rule);
-  color: var(--accent-deep);
-  background: var(--accent-tint);
-}
-.helpful-btn.active {
+.notebook-btn:hover {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--ink);
 }
-.helpful-btn svg {
+.notebook-btn svg {
   width: 12px;
   height: 12px;
 }
