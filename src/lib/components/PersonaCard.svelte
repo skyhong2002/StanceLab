@@ -54,7 +54,6 @@
     >
       <span class="persona-glyph"><Icon name={meta.glyph} /></span>
       {meta.name}
-      <span class="persona-tag">{meta.tagline}</span>
     </button>
     <div class="persona-head-actions">
       {#if !isLoading && !error && !isStreaming}

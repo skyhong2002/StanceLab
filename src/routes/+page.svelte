@@ -89,8 +89,6 @@
     }
   });
 
-  
-
   function fallbackQuestion() {
     return QUESTION_SUGGESTIONS[
       Math.floor(Math.random() * QUESTION_SUGGESTIONS.length)
@@ -416,7 +414,7 @@
 <header class="topbar">
   <div class="brand">
     <span class="brand-mark"></span>
-    StanceLab <small>· think before you share</small>
+    StanceLab
   </div>
 
   <div class="topbar-actions">
