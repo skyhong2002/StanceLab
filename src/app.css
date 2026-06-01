@@ -172,6 +172,12 @@ textarea {
   font-weight: 500;
   font-size: 18px;
   letter-spacing: -0.01em;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
 }
 .brand-mark {
   width: 22px;
@@ -783,57 +789,49 @@ input.field::placeholder {
 }
 .persona-foot {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   margin-top: auto;
   padding-top: 12px;
   border-top: 1px dashed var(--rule);
 }
 .notebook-btn {
-  background: transparent;
-  border: 1px solid var(--accent-rule);
+  background: none;
+  border: none;
   color: var(--accent-deep);
-  background: var(--accent-tint);
-  border-radius: 100px;
-  padding: 5px 10px;
-  font-family: var(--sans);
-  font-size: 12px;
+  padding: 6px;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
   transition: all 0.15s;
-  font-weight: 500;
+  cursor: pointer;
 }
 .notebook-btn:hover {
-  background: var(--accent);
-  border-color: var(--accent);
   color: var(--ink);
 }
 .notebook-btn svg {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
 }
 
 .persona-followup {
-  background: transparent;
-  border: 1px solid var(--accent-rule);
+  background: none;
+  border: none;
   color: var(--accent-deep);
-  background: var(--accent-tint);
-  border-radius: var(--r-sm);
-  padding: 6px 12px;
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  padding: 6px;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
   transition: all 0.15s;
+  cursor: pointer;
 }
 .persona-followup:hover {
-  background: var(--accent);
   color: var(--ink);
+}
+.persona-followup svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* standalone message card */
@@ -912,9 +910,9 @@ input.field::placeholder {
 }
 .standalone-foot {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   margin-top: auto;
   padding-top: 12px;
   border-top: 1px dashed var(--rule);
@@ -1875,15 +1873,6 @@ body.softer {
   flex: 1;
   display: flex;
 }
-.notepad-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 22px 14px;
-  border-top: 1px solid var(--rule-soft);
-  background: var(--paper-2);
-  gap: 12px;
-}
 
 /* Empty state */
 .empty-convo {
@@ -2219,7 +2208,7 @@ body.softer {
 .notepad-foot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 10px 18px;
   border-top: 1px solid var(--rule-soft);
   background: var(--paper);
