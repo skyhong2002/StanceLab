@@ -43,12 +43,9 @@
 </script>
 
 <div class="page" style="max-width: 720px;">
-  <p class="eyebrow">你分享了它</p>
-  <h1 class="display" style="font-size: clamp(34px, 4vw, 48px);">
-    做得好。<em>那才是最難的部分。</em>
-  </h1>
+  <h1 class="display" style="font-size: clamp(34px, 4vw, 48px);">做得好。</h1>
   <p class="lead" style="margin-bottom: 32px;">
-    我們把這視為已發佈。你寫下的內容是你的——留著它、之後再修改，或在另一個場合再次分享。現在重要的是接下來的對話。
+    你寫下的內容是你的。留著它、之後再修改，或在另一個場合再次分享。現在重要的是接下來的對話。
   </p>
 
   <div class="paper-soft" style="margin-bottom: 24px;">
@@ -70,7 +67,7 @@
       {#if copied}
         <Icon name="check" /> 已複製
       {:else}
-        <Icon name="copy" /> 再次複製
+        <Icon name="copy" /> 複製
       {/if}
     </button>
     <button class="btn btn-ghost btn-sm" onclick={onExport}>
@@ -112,13 +109,6 @@
         )} 個百分點。值得留意。
       </p>
     {/if}
-  </div>
-
-  <div class="safety" style="margin-bottom: 28px;">
-    <Icon name="hand" />
-    <div>
-      <strong>一個小小的請求。</strong> 如果群組裡的某個回應改變了你的想法——哪怕只有一點點——回到這裡把它寫下來。重點不在於正確，而在於誠實面對思考是如何流動的。
-    </div>
   </div>
 
   <div class="row-between" style="margin-top: 16px;">

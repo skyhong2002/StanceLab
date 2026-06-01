@@ -47,11 +47,10 @@
 </script>
 
 <div class="page" style="max-width: 760px;">
-  <p class="eyebrow">一個讓你在發文前安靜思考的小空間</p>
   <h1 class="display">你在想些什麼？</h1>
   <p class="lead" style="margin-bottom: 36px;">
     先寫下你的意見，即使它還粗糙、還沒理清也沒關係。三種不同的 AI
-    聲音會協助你把它拆解開來——一個提問、一個整理、一個反駁——旁邊還有一塊記事本供你發揮。要分享什麼，由你決定。
+    聲音會協助你把它拆解開來，一個提問、一個整理、一個反駁，旁邊還有一塊記事本供你發揮。
   </p>
 
   <div style="margin-bottom: 28px;">
@@ -60,7 +59,7 @@
       <span class="muted text-sans" style="font-size: 12px;">必填</span>
     </div>
     <p class="muted text-sans" style="font-size: 13px; margin: 0 0 12px;">
-      一句話或一段話都行。歡迎自相矛盾——別急著把它們抹平。
+      一句話或一段話都行，歡迎自相矛盾，把最真實的想法記錄下來就行。
     </p>
     <textarea
       bind:this={textareaEl}
@@ -86,7 +85,7 @@
       </span>
     </div>
     <p class="muted text-sans" style="font-size: 13px; margin: 0 0 12px;">
-      一個能讓對話保持聚焦的問題。如果你還沒有，我們會根據你的意見草擬一個——你可以修改或替換它。
+      一個能讓對話保持聚焦的問題。如果你還沒有，我們會根據你的意見草擬一個，你可以修改或替換它。
     </p>
     <div class="question-field">
       <input
@@ -144,32 +143,6 @@
         >{confidence}% 確定</span
       >
       <span>相當確定</span>
-    </div>
-  </div>
-
-  <div style="margin-bottom: 28px;">
-    <div class="field-head">
-      <h2>想到它時，是什麼感覺？</h2>
-      <span class="muted text-sans" style="font-size: 12px;"
-        >選填 · 符合的都可以選</span
-      >
-    </div>
-    <div class="feeling-chips" style="margin-top: 10px;">
-      {#each FEELINGS as f (f)}
-        <button
-          class={["feeling-chip", { active: feeling.includes(f) }]}
-          onclick={() => toggleFeeling(f)}
-        >
-          {f}
-        </button>
-      {/each}
-    </div>
-  </div>
-
-  <div class="safety" style="margin-top: 28px;">
-    <Icon name="shield" />
-    <div>
-      <strong>這一切只屬於你。</strong> 沒有任何內容會自動發佈。要不要讓任何東西離開這個頁面，都由你決定。你隨時可以暫停或退出。
     </div>
   </div>
 

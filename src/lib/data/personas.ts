@@ -85,7 +85,6 @@ export const DEFAULT_PROMPTS: Record<PersonaKind, string> = {
 
 export interface PersonaMeta {
   name: string;
-  tagline: string;
   glyph: PersonaKind;
   var: string;
 }
@@ -93,19 +92,16 @@ export interface PersonaMeta {
 export const PERSONA_META: Record<PersonaKind, PersonaMeta> = {
   interviewer: {
     name: "提問者",
-    tagline: "只提問，不引導",
     glyph: "interviewer",
     var: "--interviewer",
   },
   mentor: {
     name: "導師",
-    tagline: "整理並說明",
     glyph: "mentor",
     var: "--mentor",
   },
   opponent: {
     name: "對手",
-    tagline: "檢驗你的論證",
     glyph: "opponent",
     var: "--opponent",
   },
