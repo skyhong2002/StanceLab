@@ -125,7 +125,8 @@
     if (!question.trim()) {
       await generateQuestion();
     }
-    currentInput = opinion;
+    notepad = opinion;
+    currentInput = question ? `${opinion}\n\n${question}` : opinion;
     step = "workspace";
   }
 
