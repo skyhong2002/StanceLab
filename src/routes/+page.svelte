@@ -58,7 +58,7 @@
   let composerEl = $state<HTMLTextAreaElement | null>(null);
 
   // resizable split between conversation and notepad panes
-  let splitPct = $state(50);
+  let splitPct = $state(67);
   let dragging = $state(false);
   let workspaceEl = $state<HTMLDivElement | null>(null);
 
