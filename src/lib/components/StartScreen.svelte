@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Sparkles, ArrowRight } from "@lucide/svelte";
+  import { Sparkles, ArrowRight, Upload } from "@lucide/svelte";
   import { FEELINGS } from "$lib/data/personas";
 
   interface Props {
@@ -16,6 +16,7 @@
     onFeeling: (v: string[]) => void;
     onGenerateQuestion: () => void;
     onBegin: () => void;
+    onImport: () => void;
   }
 
   let {
@@ -32,6 +33,7 @@
     onFeeling,
     onGenerateQuestion,
     onBegin,
+    onImport,
   }: Props = $props();
 
   let textareaEl: HTMLTextAreaElement = $state()!;
@@ -168,9 +170,13 @@
   </div>
 
   <div class="row-between" style="margin-top: 32px;">
-    <span class="muted text-sans" style="font-size: 13px;">
-      大約 10–15 分鐘。隨時都能回來。
-    </span>
+    <button
+      class="btn btn-ghost"
+      onclick={onImport}
+      title="Import a previous session"
+    >
+      <Upload /> Import session
+    </button>
     <button
       class="btn btn-primary"
       disabled={!ready}

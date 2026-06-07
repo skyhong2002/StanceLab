@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Key, RefreshCw, Settings } from "@lucide/svelte";
+  import { Key, RefreshCw, Settings, Upload } from "@lucide/svelte";
   import StartScreen from "$lib/components/StartScreen.svelte";
   import ConversationPane from "$lib/components/ConversationPane.svelte";
   import NotepadPane from "$lib/components/NotepadPane.svelte";
@@ -7,6 +7,7 @@
   import SettingsDrawer from "$lib/components/SettingsDrawer.svelte";
   import ApiKeyModal from "$lib/components/ApiKeyModal.svelte";
   import PersonaModal from "$lib/components/PersonaModal.svelte";
+  import ImportModal from "$lib/components/ImportModal.svelte";
 
   import {
     PERSONA_META,
@@ -55,6 +56,7 @@
   let settingsOpen = $state(false);
   let settingsFocusApi = $state(false);
   let apiModalOpen = $state(false);
+  let importModalOpen = $state(false);
   let composerEl = $state<HTMLTextAreaElement | null>(null);
 
   // resizable split between conversation and notepad panes
@@ -567,6 +569,69 @@
     currentInput = "";
   }
 
+  function importSession(data: {
+    mode?: string;
+    opinion?: string;
+    question?: string;
+    confidence?: number;
+    postingDestination?: string;
+    postConfidence?: number | null;
+    feeling?: string[];
+    turns?: unknown[];
+    prompts?: Record<string, string>;
+    standalonePrompt?: string;
+    apiProvider?: string;
+    model?: string;
+    notepad?: string;
+    timestamp?: string;
+  }) {
+    settings.mode = data.mode === "standalone" ? "standalone" : "personas";
+    opinion = typeof data.opinion === "string" ? data.opinion : "";
+    question = typeof data.question === "string" ? data.question : "";
+    confidence = typeof data.confidence === "number" ? data.confidence : 50;
+    postingDestination =
+      typeof data.postingDestination === "string"
+        ? data.postingDestination
+        : "";
+    feeling = Array.isArray(data.feeling) ? data.feeling : [];
+    postConfidence =
+      typeof data.postConfidence === "number" ? data.postConfidence : null;
+    notepad = typeof data.notepad === "string" ? data.notepad : opinion;
+    currentInput = "";
+    isThinking = false;
+    fullscreen = null;
+    expandedPersona = null;
+
+    turns = (Array.isArray(data.turns) ? data.turns : []).map((t: any) => ({
+      user: t.user ?? "",
+      responses: t.responses ?? null,
+      thinking: t.thinking ?? null,
+      standaloneResponse: t.standaloneResponse ?? undefined,
+      standaloneThinking: t.standaloneThinking ?? undefined,
+    }));
+
+    questionGenerating = false;
+
+    if (data.prompts && settings.mode === "personas") {
+      settings.prompts = { ...settings.prompts, ...data.prompts };
+    }
+    if (data.standalonePrompt && settings.mode === "standalone") {
+      settings.standalonePrompt = data.standalonePrompt;
+    }
+    if (
+      data.apiProvider === "opencode-go" ||
+      data.apiProvider === "openrouter"
+    ) {
+      settings.apiProvider = data.apiProvider;
+    }
+    if (typeof data.model === "string" && data.model) {
+      settings.model = data.model;
+    }
+
+    step = "workspace";
+    importModalOpen = false;
+  }
+
   function openSettings(focus = false) {
     settingsFocusApi = focus;
     settingsOpen = true;
@@ -618,6 +683,13 @@
       <Key />
       <span class="status-dot"></span>
     </button>
+    <button
+      class="icon-btn"
+      onclick={() => (importModalOpen = true)}
+      title="Import session"
+    >
+      <Upload />
+    </button>
     {#if step === "workspace" || step === "complete"}
       <button class="icon-btn" onclick={restart} title="Start a new session">
         <RefreshCw />
@@ -644,6 +716,7 @@
     onFeeling={(v) => (feeling = v)}
     onGenerateQuestion={generateQuestion}
     onBegin={beginReflecting}
+    onImport={() => (importModalOpen = true)}
   />
 {:else if step === "workspace"}
   <div
@@ -725,11 +798,19 @@
   focusApi={settingsFocusApi}
   onClose={() => (settingsOpen = false)}
   onExportSession={exportSession}
+  onImportSession={() => (importModalOpen = true)}
   onModeChange={handleModeChange}
 />
 
 {#if apiModalOpen}
   <ApiKeyModal onClose={() => (apiModalOpen = false)} />
+{/if}
+
+{#if importModalOpen}
+  <ImportModal
+    onImport={importSession}
+    onClose={() => (importModalOpen = false)}
+  />
 {/if}
 
 <style>

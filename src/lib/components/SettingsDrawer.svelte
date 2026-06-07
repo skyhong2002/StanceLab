@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { X, RefreshCw, Download } from "@lucide/svelte";
+  import { X, RefreshCw, Download, Upload } from "@lucide/svelte";
   import ModelSelect from "./ModelSelect.svelte";
   import {
     PERSONA_META,
@@ -24,6 +24,7 @@
     focusApi?: boolean;
     onClose: () => void;
     onExportSession: () => void;
+    onImportSession: () => void;
     onModeChange: (mode: InteractionMode) => void;
   }
   let {
@@ -31,6 +32,7 @@
     focusApi = false,
     onClose,
     onExportSession,
+    onImportSession,
     onModeChange,
   }: Props = $props();
 
@@ -292,12 +294,18 @@
       {/if}
 
       <div class="drawer-section">
-        <h3>Session export</h3>
-        <button class="btn btn-ghost" onclick={onExportSession}>
-          <Download /> Download session JSON
-        </button>
+        <h3>Session</h3>
+        <div class="row" style="gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-ghost" onclick={onImportSession}>
+            <Upload /> Import JSON
+          </button>
+          <button class="btn btn-ghost" onclick={onExportSession}>
+            <Download /> Export JSON
+          </button>
+        </div>
         <p class="muted text-sans" style="font-size: 12px; margin-top: 8px;">
-          Includes opinion, question, turns, notepad — never the API key.
+          Import a previous session to review or continue, or export the current
+          one. The API key is never included.
         </p>
       </div>
     </div>
