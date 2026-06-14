@@ -9,6 +9,30 @@ The current interface and default prompts are written in Traditional Chinese.
 The codebase is a SvelteKit application built with TypeScript, Vite, Tailwind
 CSS, and a Cloudflare adapter.
 
+## Visual Walkthrough
+
+### Setup Flow
+
+Users start by naming the sharing context, writing an initial opinion, rating
+their confidence, and choosing or generating an anchor question.
+
+![StanceLab setup flow](static/readme/setup-flow.gif)
+
+### Persona Conversation
+
+In three-persona mode, the same user turn is answered by the Interviewer,
+Mentor, and Opponent so the user can compare clarification, organization, and
+challenge in one workspace.
+
+![StanceLab three-persona conversation](static/readme/persona-conversation.gif)
+
+### Final Output
+
+The conversation stays paired with a notepad, so reflection can become a draft
+that the user edits, reviews, copies, or exports.
+
+![StanceLab final output flow](static/readme/final-output.gif)
+
 ## What It Does
 
 StanceLab is designed around stance preparation rather than one-shot post
