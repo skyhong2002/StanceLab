@@ -1,4 +1,7 @@
-import adapter from "@sveltejs/adapter-cloudflare";
+import adapterCloudflare from "@sveltejs/adapter-cloudflare";
+import adapterStatic from "@sveltejs/adapter-static";
+
+const isGithubPages = process.env.DEPLOY_TARGET === "github-pages";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -8,7 +11,12 @@ const config = {
       filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
   },
   kit: {
-    adapter: adapter(),
+    adapter: isGithubPages
+      ? adapterStatic({ fallback: "404.html" })
+      : adapterCloudflare(),
+    paths: {
+      base: process.env.BASE_PATH ?? "",
+    },
   },
 };
 

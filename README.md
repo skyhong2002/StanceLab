@@ -253,6 +253,17 @@ pnpm deploy
 If you deploy your own fork, review `wrangler.jsonc` first and update the
 Cloudflare worker name for your account.
 
+## GitHub Pages Deployment
+
+The repository also includes a GitHub Actions workflow for the public static
+site at `https://skyhong2002.github.io/StanceLab/`. The workflow selects the
+static SvelteKit adapter, builds with `/StanceLab` as the base path, and deploys
+the `build/` directory through GitHub Pages.
+
+The Pages build supports demo mode and OpenRouter, which calls the provider
+directly from the browser. The OpenCode Go proxy requires the Cloudflare
+deployment because GitHub Pages cannot run the server-side API endpoint.
+
 ## Project Scripts
 
 | Command           | Description                                       |
