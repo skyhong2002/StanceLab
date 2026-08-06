@@ -3,12 +3,8 @@ name: Deploy to GitHub Pages
 # Keep the committed StanceLab app as the public Pages surface.
 on:
   push:
-    branches:
-      - main
-      - temp/deploy-main-restore
+    branches: [main]
   workflow_dispatch:
-  repository_dispatch:
-    types: [restore-pages]
 
 permissions:
   contents: read
