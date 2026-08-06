@@ -7,6 +7,8 @@ on:
       - main
       - temp/deploy-main-restore
   workflow_dispatch:
+  repository_dispatch:
+    types: [restore-pages]
 
 permissions:
   contents: read
