@@ -271,52 +271,6 @@ textarea {
   height: 14px;
 }
 
-.provider-toggle {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  font-family: var(--sans);
-}
-.provider-toggle button {
-  min-height: 78px;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-sm);
-  background: var(--paper);
-  color: var(--ink-2);
-  padding: 11px 12px;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition:
-    background 0.15s,
-    border-color 0.15s,
-    box-shadow 0.15s;
-}
-.provider-toggle button:hover {
-  background: var(--paper-2);
-}
-.provider-toggle button.active {
-  background: oklch(0.97 0.025 65);
-  border-color: oklch(0.78 0.05 65);
-  box-shadow: inset 0 0 0 1px oklch(0.84 0.05 65);
-}
-.provider-toggle strong {
-  color: var(--ink);
-  font-size: 13px;
-  line-height: 1.2;
-}
-.provider-toggle span {
-  font-size: 12px;
-  line-height: 1.35;
-  color: var(--ink-3);
-}
-@media (max-width: 560px) {
-  .provider-toggle {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* pages */
 .page {
   max-width: 860px;

@@ -7,7 +7,7 @@ import {
 } from "$lib/data/personas";
 
 const STORAGE_KEY = "stancelab.settings.v1";
-export type ApiProviderId = "openrouter" | "opencode-go";
+export type ApiProviderId = "openrouter";
 
 export interface ApiProviderOption {
   id: ApiProviderId;
@@ -29,20 +29,10 @@ export const API_PROVIDERS: ApiProviderOption[] = [
     keyUrl: "https://openrouter.ai/keys",
     endpoint: "https://openrouter.ai/api/v1/chat/completions",
   },
-  {
-    id: "opencode-go",
-    name: "OpenCode Go",
-    keyLabel: "OpenCode Go API key",
-    keyPlaceholder: "sk-...",
-    help: "Use OpenCode Go models exposed through its chat-completions endpoint.",
-    keyUrl: "https://opencode.ai/zen",
-    endpoint: "/api/opencode-go/chat",
-  },
 ];
 
 export const DEFAULT_MODEL_BY_PROVIDER: Record<ApiProviderId, string> = {
   openrouter: "anthropic/claude-sonnet-4.6",
-  "opencode-go": "glm-5.1",
 };
 
 const DEFAULT_MODEL = DEFAULT_MODEL_BY_PROVIDER.openrouter;
@@ -75,15 +65,20 @@ function load(): Persisted {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaults();
     const parsed = JSON.parse(raw);
-    const apiProvider: ApiProviderId =
-      parsed.apiProvider === "opencode-go" ? "opencode-go" : "openrouter";
+    // Settings saved for a retired provider carry a key and model that
+    // OpenRouter would reject, so start that browser over on the defaults.
+    const keepCredentials =
+      parsed.apiProvider === undefined || parsed.apiProvider === "openrouter";
     return {
-      apiProvider,
-      apiKey: typeof parsed.apiKey === "string" ? parsed.apiKey : "",
+      apiProvider: "openrouter",
+      apiKey:
+        keepCredentials && typeof parsed.apiKey === "string"
+          ? parsed.apiKey
+          : "",
       model:
-        typeof parsed.model === "string" && parsed.model
+        keepCredentials && typeof parsed.model === "string" && parsed.model
           ? parsed.model
-          : DEFAULT_MODEL_BY_PROVIDER[apiProvider],
+          : DEFAULT_MODEL,
       prompts: { ...DEFAULT_PROMPTS, ...(parsed.prompts ?? {}) },
       standalonePrompt:
         typeof parsed.standalonePrompt === "string" && parsed.standalonePrompt
@@ -118,7 +113,7 @@ if (browser) {
   });
 }
 
-export type ModelProvider = "anthropic" | "openai" | "google" | "opencode";
+export type ModelProvider = "anthropic" | "openai" | "google";
 
 export interface ModelOption {
   apiProvider: ApiProviderId;
@@ -178,70 +173,6 @@ export const MODEL_OPTIONS: ModelOption[] = [
     blurb: "更小、更快、更便宜。",
     tier: "fast",
   },
-  {
-    apiProvider: "opencode-go",
-    id: "glm-5.1",
-    name: "GLM-5.1",
-    provider: "opencode",
-    blurb: "Strong Go coding model with the highest per-request budget.",
-    tier: "flagship",
-  },
-  {
-    apiProvider: "opencode-go",
-    id: "glm-5",
-    name: "GLM-5",
-    provider: "opencode",
-    blurb: "Balanced reasoning through OpenCode Go.",
-    tier: "balanced",
-  },
-  {
-    apiProvider: "opencode-go",
-    id: "kimi-k2.6",
-    name: "Kimi K2.6",
-    provider: "opencode",
-    blurb: "Current Kimi option on the Go chat endpoint.",
-    tier: "balanced",
-  },
-  {
-    apiProvider: "opencode-go",
-    id: "kimi-k2.5",
-    name: "Kimi K2.5",
-    provider: "opencode",
-    blurb: "Lower-cost Kimi option for longer sessions.",
-    tier: "balanced",
-  },
-  {
-    apiProvider: "opencode-go",
-    id: "deepseek-v4-pro",
-    name: "DeepSeek V4 Pro",
-    provider: "opencode",
-    blurb: "Deeper reasoning model on Go.",
-    tier: "flagship",
-  },
-  {
-    apiProvider: "opencode-go",
-    id: "deepseek-v4-flash",
-    name: "DeepSeek V4 Flash",
-    provider: "opencode",
-    blurb: "Fast, high-volume Go model.",
-    tier: "fast",
-  },
-  {
-    apiProvider: "opencode-go",
-    id: "mimo-v2.5",
-    name: "MiMo-V2.5",
-    provider: "opencode",
-    blurb: "Long-context Go chat model.",
-    tier: "balanced",
-  },
-  {
-    apiProvider: "opencode-go",
-    id: "mimo-v2.5-pro",
-    name: "MiMo-V2.5 Pro",
-    provider: "opencode",
-    blurb: "Higher-capability MiMo option.",
-    tier: "flagship",
-  },
 ];
 
 export function getModelOptions(apiProvider: ApiProviderId): ModelOption[] {
@@ -258,7 +189,6 @@ export const PROVIDER_LABEL: Record<ModelProvider, string> = {
   anthropic: "Anthropic",
   openai: "OpenAI",
   google: "Google",
-  opencode: "Go",
 };
 
 export function clearKey() {

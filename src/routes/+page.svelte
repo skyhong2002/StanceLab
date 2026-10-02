@@ -618,13 +618,10 @@
     if (data.standalonePrompt && settings.mode === "standalone") {
       settings.standalonePrompt = data.standalonePrompt;
     }
-    if (
-      data.apiProvider === "opencode-go" ||
-      data.apiProvider === "openrouter"
-    ) {
-      settings.apiProvider = data.apiProvider;
-    }
-    if (typeof data.model === "string" && data.model) {
+    // Sessions from a retired provider name models OpenRouter cannot serve.
+    const isOpenRouterSession =
+      data.apiProvider === undefined || data.apiProvider === "openrouter";
+    if (isOpenRouterSession && typeof data.model === "string" && data.model) {
       settings.model = data.model;
     }
 

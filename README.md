@@ -95,8 +95,8 @@ chatbot-style workflow.
 
 ## Features
 
-- Bring-your-own-key API access for OpenRouter and OpenCode Go.
-- Model picker with suggested models for each provider.
+- Bring-your-own-key API access through OpenRouter.
+- Model picker with suggested models.
 - Streaming chat responses.
 - Demo mode with scripted responses when no API key is available.
 - Editable persona prompts and standalone system prompt.
@@ -117,7 +117,6 @@ src/
     openrouter.ts      Chat-completions client, streaming parser, and response parsing helpers
   routes/
     +page.svelte       Main application state machine and workflow orchestration
-    api/opencode-go/   Server-side proxy for OpenCode Go chat requests
 ```
 
 The app has three main client states:
@@ -147,23 +146,6 @@ https://openrouter.ai/api/v1/chat/completions
 The request includes the configured model, messages, token limit, temperature,
 and streaming flag. The browser also sends the `HTTP-Referer` and `X-Title`
 headers expected by OpenRouter.
-
-### OpenCode Go
-
-OpenCode Go requests are forwarded through the SvelteKit endpoint at:
-
-```text
-/api/opencode-go/chat
-```
-
-The endpoint proxies requests to:
-
-```text
-https://opencode.ai/zen/go/v1/chat/completions
-```
-
-This proxy exists because OpenCode Go is not called browser-directly in this
-app. The user's authorization header is forwarded to the upstream API.
 
 ## Data and Privacy Notes
 
@@ -255,14 +237,10 @@ Cloudflare worker name for your account.
 
 ## GitHub Pages Deployment
 
-The repository also includes a GitHub Actions workflow for the public static
-site at `https://skyhong2002.github.io/StanceLab/`. The workflow selects the
-static SvelteKit adapter, builds with `/StanceLab` as the base path, and deploys
-the `build/` directory through GitHub Pages.
-
-The Pages build supports demo mode and OpenRouter, which calls the provider
-directly from the browser. The OpenCode Go proxy requires the Cloudflare
-deployment because GitHub Pages cannot run the server-side API endpoint.
+The public site is served from `https://stancelab.observe.tw/` by a GitHub
+Actions workflow. The workflow selects the static SvelteKit adapter, builds at
+the domain root, and deploys the `build/` directory through GitHub Pages. The
+app has no server-side endpoints, so the static build supports every feature.
 
 ## Project Scripts
 

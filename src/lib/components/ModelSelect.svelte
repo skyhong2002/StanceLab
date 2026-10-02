@@ -177,11 +177,7 @@
         <span class="model-badge model-badge-custom">Custom</span>
         <span class="model-trigger-main">
           <span class="model-trigger-name">{value || "Choose a model…"}</span>
-          <span class="model-trigger-id">
-            {apiProvider === "openrouter"
-              ? "OpenRouter model ID"
-              : "OpenCode Go chat model ID"}
-          </span>
+          <span class="model-trigger-id"> OpenRouter model ID </span>
         </span>
       {/if}
       <svg
@@ -285,9 +281,7 @@
               <span class="model-option-body">
                 <span class="model-option-name">Use a custom model ID…</span>
                 <span class="model-option-blurb">
-                  Paste any {apiProvider === "openrouter"
-                    ? "OpenRouter"
-                    : "OpenCode Go chat"} model identifier.
+                  Paste any OpenRouter model identifier.
                 </span>
               </span>
             </button>
@@ -401,11 +395,6 @@
     --badge-bg: oklch(0.95 0.035 240);
     --badge-rule: oklch(0.82 0.055 240);
     --badge-fg: oklch(0.4 0.08 240);
-  }
-  .model-badge-opencode {
-    --badge-bg: oklch(0.95 0.035 300);
-    --badge-rule: oklch(0.82 0.055 300);
-    --badge-fg: oklch(0.4 0.08 300);
   }
   .model-badge-custom {
     --badge-bg: var(--paper-3);

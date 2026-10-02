@@ -5,7 +5,6 @@
     API_PROVIDERS,
     DEFAULT_MODEL_BY_PROVIDER,
     settings,
-    type ApiProviderId,
   } from "$lib/stores/settings.svelte";
 
   interface Props {
@@ -14,20 +13,13 @@
   let { onClose }: Props = $props();
 
   let keyDraft = $state(settings.apiKey);
-  let providerDraft = $state<ApiProviderId>(settings.apiProvider);
+  const providerDraft = settings.apiProvider;
   let modelDraft = $state(settings.model);
   let showKey = $state(false);
   let error = $state("");
   const providerMeta = $derived(
     API_PROVIDERS.find((p) => p.id === providerDraft) ?? API_PROVIDERS[0],
   );
-
-  function chooseProvider(id: ApiProviderId) {
-    providerDraft = id;
-    modelDraft = DEFAULT_MODEL_BY_PROVIDER[id];
-    keyDraft = id === settings.apiProvider ? settings.apiKey : "";
-    error = "";
-  }
 
   function save() {
     const k = keyDraft.trim();
@@ -71,55 +63,23 @@
         <div>
           <div class="pane-title-main">Add an API key</div>
           <div class="pane-title-sub">
-            StanceLab's three voices and question generator use your selected
-            provider for model calls.
+            StanceLab's three voices and question generator call models through
+            OpenRouter.
           </div>
         </div>
       </div>
-      <button class="icon-btn" onclick={onClose} title="Close"
-        ><X /></button
-      >
+      <button class="icon-btn" onclick={onClose} title="Close"><X /></button>
     </header>
 
     <div class="api-modal-body">
       <p class="muted text-sans" style="font-size: 13px; margin: 0 0 14px;">
-        Don't have a key? Choose OpenRouter for pay-as-you-go access, or
-        OpenCode Go if you already subscribe to Go.
-      </p>
-
-      <div class="api-label">Provider</div>
-      <div class="provider-toggle" role="radiogroup" aria-label="API provider">
-        {#each API_PROVIDERS as provider (provider.id)}
-          <button
-            type="button"
-            class:active={providerDraft === provider.id}
-            onclick={() => chooseProvider(provider.id)}
-            role="radio"
-            aria-checked={providerDraft === provider.id}
-          >
-            <strong>{provider.name}</strong>
-            <span>{provider.help}</span>
-          </button>
-        {/each}
-      </div>
-
-      <p class="muted text-sans" style="font-size: 13px; margin: 14px 0;">
-        Need a key?
-        {#if providerDraft === "openrouter"}
-          <a
-            href="https://openrouter.ai/keys"
-            target="_blank"
-            rel="noreferrer noopener"
-            class="link-inline">Open OpenRouter</a
-          >
-        {:else}
-          <a
-            href="https://opencode.ai/zen"
-            target="_blank"
-            rel="noreferrer noopener"
-            class="link-inline">Open OpenCode Go</a
-          >
-        {/if}.
+        Don't have a key? OpenRouter offers pay-as-you-go access to many models.
+        <a
+          href="https://openrouter.ai/keys"
+          target="_blank"
+          rel="noreferrer noopener"
+          class="link-inline">Open OpenRouter</a
+        >.
       </p>
 
       <label class="api-label" for="api-key-input"
@@ -165,13 +125,8 @@
       <div class="safety" style="margin-top: 22px;">
         <ShieldCheck />
         <div>
-          {#if providerDraft === "openrouter"}
-            <strong>Your key stays in this browser.</strong> We never send it anywhere
-            except OpenRouter.
-          {:else}
-            <strong>Your key is not stored by StanceLab.</strong> It is forwarded
-            through this app only because OpenCode Go blocks browser-direct requests.
-          {/if}
+          <strong>Your key stays in this browser.</strong> We never send it anywhere
+          except OpenRouter.
         </div>
       </div>
     </div>

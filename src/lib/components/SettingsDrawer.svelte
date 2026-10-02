@@ -10,12 +10,10 @@
   } from "$lib/data/personas";
   import {
     API_PROVIDERS,
-    DEFAULT_MODEL_BY_PROVIDER,
     settings,
     clearKey,
     resetPrompts,
     resetStandalonePrompt,
-    type ApiProviderId,
   } from "$lib/stores/settings.svelte";
   import { testConnection } from "$lib/openrouter";
 
@@ -62,14 +60,6 @@
     } finally {
       testing = false;
     }
-  }
-
-  function chooseApiProvider(id: ApiProviderId) {
-    settings.apiProvider = id;
-    settings.model = DEFAULT_MODEL_BY_PROVIDER[id];
-    settings.apiKey = "";
-    settings.demoMode = false;
-    testResult = "";
   }
 </script>
 
@@ -126,34 +116,9 @@
         <p class="muted text-sans" style="font-size: 13px; margin: 0 0 14px;">
           Bring your own provider key. Stored only in this browser. Cleared on
           Clear key.
-          {#if settings.apiProvider === "opencode-go"}
-            OpenCode Go calls are forwarded through this app because its API
-            does not accept browser-direct requests.
-          {/if}
         </p>
 
-        <div class="api-label">Provider</div>
-        <div
-          class="provider-toggle"
-          role="radiogroup"
-          aria-label="API provider"
-        >
-          {#each API_PROVIDERS as provider (provider.id)}
-            <button
-              type="button"
-              class:active={settings.apiProvider === provider.id}
-              onclick={() => chooseApiProvider(provider.id)}
-              role="radio"
-              aria-checked={settings.apiProvider === provider.id}
-            >
-              <strong>{provider.name}</strong>
-              <span>{provider.help}</span>
-            </button>
-          {/each}
-        </div>
-
-        <label class="api-label" for="drawer-key" style="margin-top: 14px;"
-          >{providerMeta.keyLabel}</label
+        <label class="api-label" for="drawer-key">{providerMeta.keyLabel}</label
         >
         <div class="api-key-row">
           <input
